@@ -6,7 +6,7 @@ import PainelFiltros from "../../components/painelFiltros";
 import StatusBadge from "../../components/statusBadge";
 import type { Documento } from "../../hooks/useSistemasData";
 import type { Categoria } from "../../types/documento";
-import { formatarTamanho, obterUrlFicheiro } from "../../utils/documentos";
+import { formatarTamanho, obterUrlTransferencia } from "../../utils/documentos";
 import { classificarTipo, OPCOES_TIPO } from "../../utils/tipoDocumento";
 import { API_URL } from "../../utils/api";
 import { useTranslation } from "react-i18next";
@@ -47,7 +47,7 @@ function AcoesDocumento({
         <IconVer />
       </Link>
       <a
-        href={obterUrlFicheiro(doc.caminho, API_URL)}
+        href={obterUrlTransferencia(doc.caminho, API_URL)}
         download={doc.nomeArquivo}
         className="p-2 lg:p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-lg transition-colors border border-blue-100"
         title={t("sistemas.documentos.descarregar")}

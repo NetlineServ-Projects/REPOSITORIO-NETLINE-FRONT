@@ -4,7 +4,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDocumentoDetalhe } from "../../../../hooks/useDocumentoDetalhe";
 import StatusBadge from "../../../../components/statusBadge";
-import { obterUrlFicheiro, formatarExtensao, obterNomeExibicao, formatarTamanho } from "../../../../utils/documentos";
+import { formatarExtensao, obterNomeExibicao, formatarTamanho, obterUrlTransferencia } from "../../../../utils/documentos";
 import { API_URL } from "../../../../utils/api";
 import { IconDownload } from "../../../../components/icons";
 import { toast } from "sonner";
@@ -108,7 +108,7 @@ export default function AprovacaoDetalhesPage() {
           </div>
         </dl>
 
-        <a href={obterUrlFicheiro(documento.caminho, API_URL)} download={documento.nomeArquivo} className="flex items-center justify-center gap-2 w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-netline-azul text-sm font-semibold rounded-lg transition-colors border border-blue-100">
+        <a href={obterUrlTransferencia(documento.caminho, API_URL)} download={documento.nomeArquivo} className="flex items-center justify-center gap-2 w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-netline-azul text-sm font-semibold rounded-lg transition-colors border border-blue-100">
           <IconDownload /> {t("documentos.detalhes.baixarFicheiro")}
         </a>
 

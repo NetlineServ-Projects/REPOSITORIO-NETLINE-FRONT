@@ -17,7 +17,7 @@ export default function DocumentoViewerFallback({ extensao, url, nomeArquivo }: 
         {t("documentos.visualizador.indisponivel")}
       </p>
       <a
-        href={url}
+        href={`${url}${url.includes("?") ? "&" : "?"}transferir=1`}
         download={nomeArquivo}
         className="text-sm text-netline-azul font-semibold hover:underline"
       >

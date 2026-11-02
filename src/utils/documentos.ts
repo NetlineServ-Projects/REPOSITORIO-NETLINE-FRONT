@@ -6,6 +6,14 @@ export function obterUrlFicheiro(caminho: string, apiUrl: string): string {
   return `${apiUrl}/${caminho.replace(/^\/+/, "")}`;
 }
 
+// Endereço que faz o browser gravar o ficheiro (a API responde com Content-Disposition:
+// attachment). O atributo "download" dos links não chega: o browser ignora-o quando o
+// ficheiro vem de outra origem, como a API, e abre-o num separador.
+export function obterUrlTransferencia(caminho: string, apiUrl: string): string {
+  const url = obterUrlFicheiro(caminho, apiUrl);
+  return url === "#" ? url : `${url}${url.includes("?") ? "&" : "?"}transferir=1`;
+}
+
 export function formatarExtensao(tipo?: string, nomeArquivo?: string): string {
   const t = (tipo || "").toLowerCase();
 

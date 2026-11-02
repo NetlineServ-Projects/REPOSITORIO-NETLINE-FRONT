@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import EtiquetaSistema from "./etiquetaSistema";
 import { useTranslation } from "react-i18next";
 import { IconDownload } from "./icons";
-import { obterUrlFicheiro, formatarExtensao, obterNomeExibicao, formatarTamanho } from "../utils/documentos";
+import { formatarExtensao, obterNomeExibicao, formatarTamanho, obterUrlTransferencia } from "../utils/documentos";
 import { API_URL } from "../utils/api";
 import type { Documento } from "../types/documento";
 
@@ -29,7 +29,7 @@ export default function DocumentoCard({ doc, acoes }: { doc: Documento; acoes?: 
       <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-slate-400">{doc.dataSubmissao ? new Date(doc.dataSubmissao).toLocaleDateString(i18n.language === "en" ? "en-GB" : "pt-PT") : t("componentes.documento.semData")}</span>
         <div className="flex flex-wrap items-center gap-1.5">
-          <a href={obterUrlFicheiro(doc.caminho, API_URL)} download={doc.nomeArquivo} className="p-2 md:p-1.5 bg-blue-50 hover:bg-blue-100 text-netline-azul rounded-lg transition-colors border border-blue-100" title={t("componentes.documento.transferir")}>
+          <a href={obterUrlTransferencia(doc.caminho, API_URL)} download={doc.nomeArquivo} className="p-2 md:p-1.5 bg-blue-50 hover:bg-blue-100 text-netline-azul rounded-lg transition-colors border border-blue-100" title={t("componentes.documento.transferir")}>
             <IconDownload />
           </a>
           {acoes}

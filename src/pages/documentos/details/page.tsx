@@ -9,8 +9,7 @@ import {
   obterUrlFicheiro,
   formatarExtensao,
   obterNomeExibicao,
-  formatarTamanho
-} from "../../../utils/documentos";
+  formatarTamanho, obterUrlTransferencia } from "../../../utils/documentos";
 import { API_URL } from "../../../utils/api";
 import { IconDownload } from "../../../components/icons";
 import { EstadoCarregando, EstadoErro } from "../../../components/estados";
@@ -33,6 +32,7 @@ export default function DocumentoDetalhesPage() {
       extensao: formatarExtensao(documento.tipoArquivo, documento.nomeArquivo),
       nomeExibicao: obterNomeExibicao(documento),
       urlFicheiro: obterUrlFicheiro(documento.caminho, API_URL),
+      urlTransferencia: obterUrlTransferencia(documento.caminho, API_URL),
       dataSubmissao: documento.dataSubmissao
         ? new Date(documento.dataSubmissao).toLocaleDateString(i18n.language === "en" ? "en-GB" : "pt-PT")
         : "N/A"
@@ -128,7 +128,7 @@ export default function DocumentoDetalhesPage() {
           </dl>
 
           <a
-            href={dados.urlFicheiro}
+            href={dados.urlTransferencia}
             download={documento.nomeArquivo}
             className="flex items-center justify-center gap-2 w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-netline-azul text-sm font-semibold rounded-lg transition-colors border border-blue-100/80 mt-2"
           >
