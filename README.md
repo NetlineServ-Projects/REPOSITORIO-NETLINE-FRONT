@@ -1,184 +1,78 @@
-# React + TypeScript + Vite
+# Repositório Digital da Netline — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web do repositório interno da Netline Serv, Lda. Reúne a documentação da empresa, os sistemas que a equipa desenvolve e a infraestrutura onde esses sistemas correm (plataformas, servidores, imagens de containers e domínios).
 
-Currently, two official plugins are available:
+A API está noutro repositório: [repositorio-backend](https://github.com/NetlineServ-Projects/repositorio-backend).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- **Documentos:** envio, pesquisa, filtros e pré-visualização de PDF e imagens. Os documentos dos funcionários passam por aprovação antes de ficarem visíveis.
+- **Aprovações:** os administradores aprovam ou rejeitam documentos, com o motivo da rejeição.
+- **Sistemas desenvolvidos:** ficha técnica, documentos do sistema, e infraestrutura e credenciais por ambiente (Produção e Testes).
+- **Plataformas:** clouds, servidores, registos de imagens e domínios, com a topologia em diagrama e exportação em PDF ou Excel.
+- **Notificações:** documentos aprovados, rejeitados ou à espera de revisão, e domínios prestes a expirar.
+- **Administração:** utilizadores, lixeira e registo de atividade.
+- Português (PT-PT) e inglês, tema claro e escuro, e interface adaptada a telemóvel.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologias
 
-## Expanding the ESLint configuration
+React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7, i18next, React Flow (topologia), react-pdf, exceljs e jspdf (exportações).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Começar
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# NETLINE-REPOSITORIO — Frontend
-
-SPA React/TypeScript para o sistema de gestão de documentos. Consome a API do **API-PRISMA**.
-
-## Stack Tecnológica
-
-| Camada | Tecnologia |
-|---|---|
-| Build tool | Vite |
-| Linguagem | TypeScript |
-| UI | React |
-| Estilos | Tailwind CSS v4 (`@tailwindcss/vite`, `@custom-variant dark`) |
-| HTTP client | Axios (`http-client.ts`) |
-| Autenticação | httpOnly cookies (não localStorage — padrão de segurança da empresa) |
-| i18n | i18next, react-i18next, i18next-browser-languagedetector |
-| PDF preview | react-pdf (canvas, controlo próprio — funciona bem em mobile/tablet, ao contrário do iframe nativo) |
-| Notificações | sonner (substituiu `alert()`/`confirm()` nativos) |
-| Gestor de pacotes | Yarn |
-
-## Estrutura do Projeto
-
-```
-NETLINE-REPOSITORIO/
-├── src/
-│   ├── pages/
-│   │   ├── auth/               # autenticacao.tsx
-│   │   ├── home/                # home.tsx (página pública)
-│   │   ├── admin/               # páginas exclusivas de ADMIN
-│   │   │   ├── aprovacoes/
-│   │   │   │   ├── details/     # revisão completa de um documento pendente
-│   │   │   │   ├── edit/        # editar titulo/descricao/categoria antes de aprovar
-│   │   │   │   └── page.tsx
-│   │   │   ├── usuarios/        # (a migrar para este padrão)
-│   │   │   └── lixeira/         # (a migrar para este padrão)
-│   │   ├── categorias/
-│   │   ├── documentos/
-│   │   │   └── (DocumentoDetalhesPage em rota própria /dashboard/documentos/:id)
-│   │   ├── sistemas/
-│   │   ├── perfil/
-│   │   ├── configuracoes/
-│   │   └── dashboard.tsx, dashboardHome.tsx  # shell autenticado, ficam soltos em pages/
-│   ├── components/               # só peças reutilizadas em MAIS DE UMA página
-│   │   ├── DocumentoCard, DocumentoRow, StatusBadge, SearchInput, ViewToggle
-│   │   ├── documentoModal.tsx    # partilhado entre Documentos e Categorias
-│   │   └── ModalConfirmacao.tsx  # substitui window.confirm()
-│   ├── hooks/
-│   │   ├── useAprovacoesData, useDashboardData, useDocumentosData,
-│   │   │   useSistemasData, useUsuariosData
-│   ├── data/client/
-│   │   ├── endpoint.ts
-│   │   ├── http-client.ts       # axios + interceptor Accept-Language
-│   │   └── token.utils.ts
-│   ├── lang/
-│   │   ├── i18n.ts
-│   │   └── resources/{pt,en}.json
-│   ├── config/
-│   └── utils/
-├── index.html                    # script inline anti-flash de dark mode
-└── App.tsx                       # rotas
-```
-
-## Convenção Página vs. Componente
-
-- **`pages/<nome>/`** — pasta por página; subpastas dentro dela (ex: `aprovacoes/details`, `aprovacoes/edit`) são para peças usadas **só naquela página**.
-- **`components/`** (raiz, global) — só para peças reutilizadas em **mais do que uma** página.
-- **`pages/admin/`** — agrupa páginas exclusivas de ADMIN (Aprovações já migrada; Usuários e Lixeira ainda usam os componentes antigos e estão pendentes de migração para este padrão).
-
-## Rotas
-
-- Todas as rotas autenticadas ficam sob o prefixo **`/dashboard`** (ex: `/dashboard/documentos`, `/dashboard/aprovacoes`, `/dashboard/documentos/:id`).
-- `RotaProtegida` — exige apenas autenticação.
-- `RotaAdmin` — exige autenticação **e** `perfil === ADMIN`; usada para embrulhar o grupo de rotas `admin/`.
-- Auto-registo (`/cadastro`) foi removido — só existe criação de conta pelo ADMIN.
-
-## Páginas — Regras de Negócio no Frontend
-
-| Página | Regras |
-|---|---|
-| **Documentos** | Mostra só documentos `APROVADO`. Ações: Ver, Editar, Apagar (sem Aprovar). Criar/editar via `DocumentoModal` na própria página (sem subrotas). Botão "+ Novo Documento" visível para ADMIN e FUNCIONARIO (a criação de documentos não é exclusiva de admin). |
-| **Aprovações** | Só ADMIN. `details/` para revisão completa; `edit/` para corrigir metadados antes de aprovar; motivo de rejeição obrigatório e visível ao FUNCIONARIO depois. |
-| **Categorias** | Drill-down: clicar numa categoria mostra os seus documentos (lista) e permite criar/editar/apagar a partir daí, reaproveitando `DocumentoModal` com a prop `categoriaIdPredefinida`. Reutiliza `useDocumentosData` (não tem hook próprio, para não duplicar o tipo `Documento`). |
-| **Sistemas** | Formulário de anexar documento também recolhe `título` (opcional, default = nome do ficheiro) e `descrição`. Dropdown de categoria mostra só as não sensíveis (filtro de UX, não de permissão — o backend já filtra por permissão). |
-| **Lixeira** | Lista documentos com `apagadoEm` definido; permite restaurar. |
-| **Perfil** | FUNCIONARIO só pode alterar a própria senha e fotografia. ADMIN pode alterar todos os campos, para si e para outros utilizadores (via páginas de Usuários). |
-| **Configurações** | Idioma (pt/en) e tema (claro/escuro), persistidos em `localStorage` (`idioma`, `temaEscuro`) e sincronizados com o backend via `PATCH`. |
-| **Novo Documento** | Texto do botão e do toast varia por papel: ADMIN → "Guardar" / "Documento publicado com sucesso"; FUNCIONARIO → "Submeter Documento" / "Documento submetido para aprovação" + aviso explicando o fluxo de aprovação. |
-
-## Internacionalização (i18n)
-
-- Deteção de idioma via `i18next-browser-languagedetector`, chave `localStorage` **`idioma`** (mesma chave usada pelo header `Accept-Language` no `http-client.ts`, para o frontend e o backend ficarem sincronizados).
-- Idioma por defeito: `pt`.
-- **Atenção às chaves de plural**: usar sempre os sufixos fixos do CLDR/i18next — **`_one` / `_other`** (não `_um`/`_outros`) — em qualquer idioma.
-- Seletor de idioma (PT | EN) disponível tanto na página de login como em Configurações.
-
-## Dark Mode
-
-- Script inline no `index.html`, executado **antes** do React montar, lê `localStorage("temaEscuro")` e adiciona a classe `dark` ao `<html>` para evitar flash de tema errado.
-- Tailwind v4 com `@custom-variant dark (&:where(.dark, .dark *))`.
-
-## Preview de Documentos
-
-- Rota dedicada `/dashboard/documentos/:id` (`DocumentoDetalhesPage`) em vez de modal — mostra preview + metadados (categoria, submetido por, data, tamanho, download).
-- `DocumentoViewerFactory`: um componente de viewer por tipo de ficheiro (imagem, PDF via react-pdf, fallback genérico).
-
-## Instalação
+Requisitos: Node.js 22 e Yarn 1. A API tem de estar a correr (ver o README do backend).
 
 ```bash
 yarn install
-yarn dev
+cp .env.example .env   # e ajuste o VITE_API_BASE_URL, se for preciso
+yarn dev               # http://localhost:5173
 ```
 
+### Variáveis de ambiente
+
+| Variável | Para que serve | Exemplo |
+|---|---|---|
+| `VITE_API_BASE_URL` | Endereço da API, sem barra no fim e sem `/api/v1` | `http://localhost:3000` |
+
+O `.env` não vai para o Git: cada ambiente tem o seu. Use o `.env.example` como base.
+
+## Comandos
+
+| Comando | O que faz |
+|---|---|
+| `yarn dev` | Servidor de desenvolvimento com recarregamento automático |
+| `yarn build` | Gera a versão de produção em `dist/` |
+| `yarn preview` | Serve localmente o que está em `dist/` |
+| `yarn lint` | Verifica o código com o ESLint |
+| `npx tsc -b` | Verifica os tipos do TypeScript |
+
+O projeto usa **Yarn**: não use `npm install`, para não criar um `package-lock.json` ao lado do `yarn.lock`.
+
+## Organização do código
+
+```
+src/
+├── pages/          Uma pasta por área (documentos, sistemas, Plataformas, admin, perfil...)
+├── components/     Componentes partilhados (janelas de confirmação, dropdowns, estados...)
+├── hooks/          Carregamento de dados de cada área (useDocumentosData, usePlataformasData...)
+├── utils/          api.ts (pedidos à API), exportações, formatações
+├── lang/           Traduções: resources/pt.json e en.json, mais um ficheiro por área
+│                   em resources/<idioma>/<area>.json (usado como t("<area>.chave"))
+├── types/          Tipos partilhados
+└── index.css       Tailwind, cores da marca e tema escuro
+```
+
+## Convenções
+
+- **Pedidos à API:** use sempre o `fetchComToken` de `src/utils/api.ts`. Ele envia o cookie da sessão, aplica tempos limite, repete leituras que falham por rede e termina a sessão quando a API responde 401.
+- **Sessão:** o token fica num cookie `HttpOnly` definido pela API; o JavaScript não o lê nem o guarda. No `localStorage` fica só `usuario_logado` (id, nome e perfil), para o ecrã.
+- **Cores da marca:** use `bg-netline-azul`, `text-netline-dourado`, `bg-netline-amarelo`, etc., definidas em `src/index.css`. Não escreva os códigos hexadecimais à mão.
+- **Textos:** todo o texto visível passa pelo i18next (`t("...")`), em português de Portugal e em inglês.
+- **Estados de página:** use `EstadoCarregando`, `EstadoErro` e `EstadoVazio` de `src/components/estados.tsx`, e o `useCarregamento` nos hooks de dados.
+- **Confirmações:** use `useConfirmacao()` (`src/components/confirmacao.tsx`), nunca `window.confirm`.
+
+## Produção
+
+- O frontend e a API têm de estar no **mesmo site** (por exemplo `repositorio.netline.co.mz` e `api.repositorio.netline.co.mz`) e em **HTTPS**, porque o cookie da sessão é `SameSite=Strict` e `Secure`.
+- Defina o `VITE_API_BASE_URL` com o endereço público da API **antes** de `yarn build`: o Vite escreve o valor no código gerado.
+- O CI (`.github/workflows/ci.yml`) verifica os tipos e a compilação em cada push e pull request.
