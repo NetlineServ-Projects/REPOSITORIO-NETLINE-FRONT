@@ -113,6 +113,7 @@
       "nomePlaceholder": "E.g.: João Tembe",
       "email": "Work email",
       "emailPlaceholder": "user@netline.co.mz",
+      "emailInstitucional": "Only company emails are accepted (@netline.co.mz).",
       "senhaInicial": "Initial password",
       "novaSenha": "New password (optional)",
       "senhaManter": "Leave blank to keep the current one",

@@ -113,6 +113,7 @@
       "nomePlaceholder": "Ex.: João Tembe",
       "email": "E-mail institucional",
       "emailPlaceholder": "utilizador@netline.co.mz",
+      "emailInstitucional": "Só são aceites e-mails institucionais (@netline.co.mz).",
       "senhaInicial": "Palavra-passe inicial",
       "novaSenha": "Nova palavra-passe (opcional)",
       "senhaManter": "Deixe em branco para manter",

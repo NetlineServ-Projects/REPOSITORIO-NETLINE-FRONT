@@ -15,7 +15,6 @@ export default function ConfiguracoesPage() {
   const { usuarioLogado } = useUsuario();
 
   const [darkTheme, setDarkTheme] = useState<boolean>(false);
-  const [notificacoesEmail, setNotificacoesEmail] = useState<boolean>(true);
   const [idioma, setIdioma] = useState<string>("pt");
 
   const [loading, setLoading] = useState(true);
@@ -39,7 +38,6 @@ export default function ConfiguracoesPage() {
         const temaAtivo = Boolean(usuario.temaEscuro);
 
         setDarkTheme(temaAtivo);
-        setNotificacoesEmail(usuario.notificacoesEmail ?? true);
         setIdioma(usuario.idioma || "pt");
 
         // sincroniza o i18next (troca a UI) — isto já grava em localStorage("idioma")
@@ -91,7 +89,7 @@ export default function ConfiguracoesPage() {
     try {
       await fetchComToken("/usuarios/me/preferencias", {
         method: "PATCH",
-        body: JSON.stringify({ temaEscuro: darkTheme, notificacoesEmail, idioma }),
+        body: JSON.stringify({ temaEscuro: darkTheme, idioma }),
       });
 
       i18n.changeLanguage(idioma);
@@ -152,25 +150,6 @@ export default function ConfiguracoesPage() {
                 }`}
               />
             </button>
-          </div>
-
-          <hr className="border-slate-100" />
-
-          <div className="flex items-center justify-between py-2">
-            <div>
-              <p className="text-sm font-semibold text-slate-700">
-                {t("configuracoes.notificacoesEmail")}
-              </p>
-              <p className="text-xs text-slate-400">
-                {t("configuracoes.notificacoesEmailDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificacoesEmail}
-              onChange={(e) => setNotificacoesEmail(e.target.checked)}
-              className="w-4 h-4 text-netline-azul border-slate-300 rounded focus:ring-netline-azul cursor-pointer"
-            />
           </div>
 
           <hr className="border-slate-100" />

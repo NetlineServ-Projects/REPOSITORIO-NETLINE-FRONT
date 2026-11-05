@@ -19,13 +19,11 @@
 
   "configuracoes": {
     "titulo": "Configurações do sistema",
-    "subtitulo": "Gira as preferências de interface e de notificações da sua conta.",
+    "subtitulo": "Gira as preferências de interface da sua conta.",
     "preferencias": "PREFERÊNCIAS",
     "aparencia": "Aparência da plataforma",
     "modoEscuro": "Modo escuro ativado",
     "modoClaro": "Modo claro ativado (predefinição)",
-    "notificacoesEmail": "Notificações por e-mail",
-    "notificacoesEmailDesc": "Receber alertas por e-mail quando forem adicionados novos documentos",
     "idioma": "Idioma da plataforma",
     "idiomaDesc": "Selecione o idioma preferido",
     "salvar": "Guardar alterações",

@@ -102,6 +102,7 @@ export default function UsuarioFormulario({
               }
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 text-sm text-slate-700"
             />
+            <p className="text-xs text-slate-400 mt-1.5">{t("admin.usuarios.form.emailInstitucional")}</p>
           </div>
           <div>
             <label className="block font-semibold text-slate-700 mb-1.5">

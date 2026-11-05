@@ -19,13 +19,11 @@
 
   "configuracoes": {
     "titulo": "System settings",
-    "subtitulo": "Manage your interface and notification preferences.",
+    "subtitulo": "Manage your interface preferences.",
     "preferencias": "PREFERENCES",
     "aparencia": "Platform appearance",
     "modoEscuro": "Dark mode enabled",
     "modoClaro": "Light mode enabled (default)",
-    "notificacoesEmail": "Email notifications",
-    "notificacoesEmailDesc": "Receive email alerts when new documents are added",
     "idioma": "Platform language",
     "idiomaDesc": "Select your preferred language",
     "salvar": "Save changes",
