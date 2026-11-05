@@ -34,6 +34,7 @@ import type {
   AoEditarItem,
   AoEliminarItem,
 } from "../../types/plataformaTipos";
+import { PERMISSOES, pode } from "../../utils/permissoes";
 
 /* ========================================================================== */
 /* Tipos                                                                      */
@@ -75,7 +76,7 @@ function textoContem(valor: string | null | undefined, termo: string): boolean {
 export default function PlataformasPage() {
   const { t } = useTranslation();
   const { usuarioLogado } = useUsuario();
-  const ehAdmin = usuarioLogado?.perfil === "ADMIN";
+  const podeGerir = pode(usuarioLogado, PERMISSOES.INFRA_GERIR);
 
   const {
     plataformas,
@@ -345,7 +346,7 @@ export default function PlataformasPage() {
           dominios={dominios}
           subdominios={subdominios}
           imagens={imagens}
-          ehAdmin={ehAdmin}
+          podeGerir={podeGerir}
           aoVoltar={fecharDetalhe}
           aoEditar={abrirFormularioEdicao}
           aoEliminar={abrirModalExclusao}
@@ -394,7 +395,7 @@ export default function PlataformasPage() {
           </p>
         </div>
 
-        {ehAdmin && <MenuAdicionar onSelecionar={abrirFormularioCriacao} />}
+        {podeGerir && <MenuAdicionar onSelecionar={abrirFormularioCriacao} />}
       </div>
 
       {/* ================= ABAS ================= */}
@@ -464,7 +465,7 @@ export default function PlataformasPage() {
                 <AbaServidores
                   servidores={servidoresFiltrados}
                   plataformas={plataformas}
-                  ehAdmin={ehAdmin}
+                  podeGerir={podeGerir}
                   aoEditar={abrirFormularioEdicao}
                   aoEliminar={abrirModalExclusao}
                 />
@@ -475,7 +476,7 @@ export default function PlataformasPage() {
                   dominios={dominiosFiltrados}
                   subdominios={subdominios}
                   servidores={servidores}
-                  ehAdmin={ehAdmin}
+                  podeGerir={podeGerir}
                   aoEditar={abrirFormularioEdicao}
                   aoEliminar={abrirModalExclusao}
                 />
@@ -484,7 +485,7 @@ export default function PlataformasPage() {
               {abaAtiva === "imagens" && (
                 <AbaImagens
                   imagens={imagensFiltradas}
-                  ehAdmin={ehAdmin}
+                  podeGerir={podeGerir}
                   aoEditar={abrirFormularioEdicao}
                   aoEliminar={abrirModalExclusao}
                 />

@@ -10,6 +10,9 @@ interface UsuariosTabelaProps {
   onVer: (u: Usuario) => void;
   onEditar: (u: Usuario) => void;
   onEliminar: (id: number, nome: string) => void;
+  // Contas de administrador só um administrador as edita; ninguém elimina a própria conta
+  podeEditar: (u: Usuario) => boolean;
+  podeEliminar: (u: Usuario) => boolean;
 }
 
 function iniciais(nome: string) {
@@ -33,36 +36,40 @@ function Avatar({ u }: { u: Usuario }) {
   );
 }
 
-function BadgePerfil({ perfil }: { perfil: Usuario["perfil"] }) {
-  const { t } = useTranslation();
+export function BadgePerfil({ perfil }: { perfil: Usuario["perfil"] | null | undefined }) {
+  const admin = Boolean(perfil?.administrador);
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${perfil === "ADMIN" ? "bg-purple-100/70 text-purple-700" : "bg-blue-100/70 text-blue-600"}`}>
-      <FontAwesomeIcon icon={perfil === "ADMIN" ? faUserShield : faUser} className="w-3.5 h-3.5" />
-      {t(`admin.usuarios.perfis.${perfil}`)}
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${admin ? "bg-purple-100/70 text-purple-700" : "bg-blue-100/70 text-blue-600"}`}>
+      <FontAwesomeIcon icon={admin ? faUserShield : faUser} className="w-3.5 h-3.5" />
+      {perfil?.nome ?? "-"}
     </span>
   );
 }
 
 // Ver / Editar / Eliminar: as mesmas na tabela (lg+) e nos cartões (ecrãs menores)
-function AcoesUsuario({ u, onVer, onEditar, onEliminar }: { u: Usuario } & Pick<UsuariosTabelaProps, "onVer" | "onEditar" | "onEliminar">) {
+function AcoesUsuario({ u, onVer, onEditar, onEliminar, podeEditar, podeEliminar }: { u: Usuario } & Omit<UsuariosTabelaProps, "usuarios">) {
   const { t } = useTranslation();
   return (
     <div className="flex items-center justify-end gap-2">
       <button onClick={() => onVer(u)} className="p-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors" title={t("admin.usuarios.verDetalhes")} aria-label={t("admin.usuarios.verDetalhes")}>
         <FontAwesomeIcon icon={faEye} className="w-3.5 h-3.5" />
       </button>
-      <button onClick={() => onEditar(u)} className="p-2.5 text-amber-600 bg-amber-100/60 hover:bg-amber-100 rounded-lg transition-colors" title={t("comum.editar")} aria-label={t("comum.editar")}>
-        <FontAwesomeIcon icon={faPen} className="w-3.5 h-3.5" />
-      </button>
-      <button onClick={() => onEliminar(u.id, u.nome)} className="p-2.5 text-rose-600 bg-rose-100/60 hover:bg-rose-100 rounded-lg transition-colors" title={t("comum.apagar")} aria-label={t("comum.apagar")}>
-        <FontAwesomeIcon icon={faTrash} className="w-3.5 h-3.5" />
-      </button>
+      {podeEditar(u) && (
+        <button onClick={() => onEditar(u)} className="p-2.5 text-amber-600 bg-amber-100/60 hover:bg-amber-100 rounded-lg transition-colors" title={t("comum.editar")} aria-label={t("comum.editar")}>
+          <FontAwesomeIcon icon={faPen} className="w-3.5 h-3.5" />
+        </button>
+      )}
+      {podeEliminar(u) && (
+        <button onClick={() => onEliminar(u.id, u.nome)} className="p-2.5 text-rose-600 bg-rose-100/60 hover:bg-rose-100 rounded-lg transition-colors" title={t("comum.apagar")} aria-label={t("comum.apagar")}>
+          <FontAwesomeIcon icon={faTrash} className="w-3.5 h-3.5" />
+        </button>
+      )}
     </div>
   );
 }
 
 // A primeira carga (e o erro dela) é tratada pela página
-export default function UsuariosTabela({ usuarios, onVer, onEditar, onEliminar }: UsuariosTabelaProps) {
+export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaProps) {
   const { t } = useTranslation();
   if (usuarios.length === 0) {
     return <EstadoVazio mensagem={t("admin.usuarios.nenhum")} />;
@@ -85,7 +92,7 @@ export default function UsuariosTabela({ usuarios, onVer, onEditar, onEliminar }
                   <BadgePerfil perfil={u.perfil} />
                 </div>
               </div>
-              <AcoesUsuario u={u} onVer={onVer} onEditar={onEditar} onEliminar={onEliminar} />
+              <AcoesUsuario u={u} {...acoes} />
             </li>
           ))}
         </ul>
@@ -118,7 +125,7 @@ export default function UsuariosTabela({ usuarios, onVer, onEditar, onEliminar }
                     <BadgePerfil perfil={u.perfil} />
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <AcoesUsuario u={u} onVer={onVer} onEditar={onEditar} onEliminar={onEliminar} />
+                    <AcoesUsuario u={u} {...acoes} />
                   </td>
                 </tr>
               ))}

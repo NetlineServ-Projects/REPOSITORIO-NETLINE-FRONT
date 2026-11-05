@@ -34,9 +34,10 @@ import { localeDatas } from "../../../types/plataformaConstantes";
 import PlataformaFormularioPage from "../formulario/page";
 import { useCarregamento } from "../../../hooks/useCarregamento";
 import { EstadoCarregando, EstadoErro } from "../../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { id?: number; nome: string; perfil?: string } | null;
+  usuario: { id?: number; nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 const LISTA_SERVIDORES = "/dashboard/plataformas?aba=servidores";
@@ -74,7 +75,7 @@ export default function ServidorDetalhePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const podeGerir = pode(usuario, PERMISSOES.INFRA_GERIR);
 
   const [servidor, setServidor] = useState<Servidor | null>(null);
   const [editando, setEditando] = useState(false);
@@ -161,7 +162,7 @@ export default function ServidorDetalhePage() {
             </div>
           </div>
 
-          {ehAdmin && (
+          {podeGerir && (
             <div className="flex items-center gap-2">
               <BotaoIconeCabecalho rotulo={t("plataformas.servidor.editar")} Icone={IconCaneta} onClick={() => setEditando(true)} />
               <BotaoIconeCabecalho

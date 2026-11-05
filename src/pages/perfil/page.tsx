@@ -8,6 +8,7 @@ import { IconOlhoAberto, IconOlhoFechado, IconUsuario } from "../../components/i
 import ModalFotografia from "./modalFotografia";
 import { EstadoCarregando } from "../../components/estados";
 import type { UsuarioData } from "../../hooks/useDashboardData";
+import { PERMISSOES, pode } from "../../utils/permissoes";
 
 interface DashboardContext {
   usuario: UsuarioData | null;
@@ -24,7 +25,8 @@ interface DadosPerfilForm {
 export default function PerfilPage() {
   const { t } = useTranslation();
   const { usuario, recarregarDashboard } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  // Os próprios dados (nome, e-mail, cargo...) só os edita quem gere utilizadores
+  const podeEditarDados = pode(usuario, PERMISSOES.UTILIZADORES_GERIR);
 
   const [editando, setEditando] = useState(false);
   const [formDados, setFormDados] = useState<DadosPerfilForm>({
@@ -110,8 +112,8 @@ export default function PerfilPage() {
 
     setSalvando(true);
     try {
-      // Admin: campos de perfil só são editáveis (e só são enviados) por admin
-      if (ehAdmin && usuario?.id) {
+      // Os campos da conta só são editáveis (e só são enviados) por quem gere utilizadores
+      if (podeEditarDados && usuario?.id) {
         await fetchComToken(API_ENDPOINTS.USUARIO_BY_ID(usuario.id), {
           method: "PATCH",
           body: JSON.stringify(formDados),
@@ -227,7 +229,7 @@ export default function PerfilPage() {
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                   {label}
                 </label>
-                {editando && ehAdmin ? (
+                {editando && podeEditarDados ? (
                   <input
                     type={campo === "email" ? "email" : "text"}
                     name={campo}
@@ -238,7 +240,7 @@ export default function PerfilPage() {
                   />
                 ) : (
                   <div className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 text-sm font-medium break-all">
-                    {usuario[campo as keyof UsuarioData] || t("perfil.semValor")}
+                    {usuario[campo] || t("perfil.semValor")}
                   </div>
                 )}
               </div>

@@ -12,6 +12,8 @@ import { IconCaneta, IconLixeira } from "../../../../components/icons";
 import { fetchComToken } from "../../../../utils/api";
 import { API_ENDPOINTS } from "../../../../data/client/endpoint";
 import type { Usuario } from "../../../../hooks/useUsuariosData";
+import { useUsuario } from "../../../../components/usuarioContext";
+import { ehAdministrador } from "../../../../utils/permissoes";
 
 // A API devolve mais campos do que a tabela mostra (nunca a palavra-passe)
 type UsuarioCompleto = Usuario & { ativo?: boolean; idioma?: string; temaEscuro?: boolean };
@@ -28,6 +30,7 @@ export default function UsuarioDetalhesPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const confirmar = useConfirmacao();
+  const { usuarioLogado } = useUsuario();
   const [usuario, setUsuario] = useState<UsuarioCompleto | null>(null);
   const { carregando, erro, executar } = useCarregamento(t("admin.usuarios.detalhes.erroCarregar"));
 
@@ -80,7 +83,11 @@ export default function UsuarioDetalhesPage() {
     );
   }
 
-  const ehAdmin = usuario.perfil === "ADMIN";
+  const ehAdmin = Boolean(usuario.perfil?.administrador);
+  const nomeDoPerfil = usuario.perfil?.nome ?? "-";
+  // Contas de administrador só um administrador as altera; ninguém elimina a própria conta
+  const podeEditar = ehAdministrador(usuarioLogado) || !ehAdmin;
+  const podeEliminar = podeEditar && usuario.id !== usuarioLogado?.id;
   const ativo = usuario.ativo !== false;
   const vazio = <TextoVazio>{t("admin.usuarios.detalhes.naoDefinido")}</TextoVazio>;
 
@@ -102,7 +109,7 @@ export default function UsuarioDetalhesPage() {
             </div>
             <div className="min-w-0">
               <span className="text-xs uppercase font-semibold text-blue-200/80 tracking-widest block mb-1">
-                {ehAdmin ? t("admin.usuarios.administrador") : t("admin.usuarios.funcionario")}
+                {nomeDoPerfil}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold break-words">{usuario.nome}</h2>
               <p className="text-sm text-blue-100/80 mt-1 break-all">{usuario.email}</p>
@@ -110,12 +117,16 @@ export default function UsuarioDetalhesPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <BotaoIconeCabecalho
-              rotulo={t("admin.usuarios.detalhes.editar")}
-              Icone={IconCaneta}
-              onClick={() => navigate(`${CAMINHO_LISTA}?editar=${usuario.id}`)}
-            />
-            <BotaoIconeCabecalho rotulo={t("admin.usuarios.detalhes.eliminar")} Icone={IconLixeira} perigoso onClick={eliminar} />
+            {podeEditar && (
+              <BotaoIconeCabecalho
+                rotulo={t("admin.usuarios.detalhes.editar")}
+                Icone={IconCaneta}
+                onClick={() => navigate(`${CAMINHO_LISTA}?editar=${usuario.id}`)}
+              />
+            )}
+            {podeEliminar && (
+              <BotaoIconeCabecalho rotulo={t("admin.usuarios.detalhes.eliminar")} Icone={IconLixeira} perigoso onClick={eliminar} />
+            )}
           </div>
         </div>
       </div>
@@ -131,7 +142,7 @@ export default function UsuarioDetalhesPage() {
                     ehAdmin ? "bg-purple-50 text-purple-700" : "bg-blue-50 text-blue-700"
                   }`}
                 >
-                  {ehAdmin ? t("admin.usuarios.administrador") : t("admin.usuarios.funcionario")}
+                  {nomeDoPerfil}
                 </span>
               </Campo>
               <Campo rotulo={t("admin.usuarios.detalhes.estado")}>

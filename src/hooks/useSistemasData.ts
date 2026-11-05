@@ -3,6 +3,7 @@ import { useCarregamento } from "./useCarregamento";
 import { fetchComToken } from "../utils/api";
 import { API_ENDPOINTS } from "../data/client/endpoint";
 import type { Documento, Categoria } from "../types/documento";
+import { PERMISSOES, pode, type ComAcesso } from "../utils/permissoes";
 
 export type { Documento, Categoria };
 
@@ -71,7 +72,7 @@ export interface Sistema {
   responsavelTecnico?: string;
   versaoAtual?: string;
   totalDocumentos?: number;
-  // Quem criou o sistema: só essa pessoa (ou um ADMIN) o pode editar e eliminar
+  // Quem criou o sistema: só essa pessoa (ou quem tem sistemas.gerir) o pode editar e eliminar
   criadoPorId?: number | null;
   criadoPor?: { id: number; nome: string } | null;
 }
@@ -79,10 +80,11 @@ export interface Sistema {
 // Mesma regra do backend (sistemasService.garantirPodeGerir)
 export function podeGerirSistema(
   sistema: Sistema,
-  usuario: { id?: number; perfil?: string } | null,
+  usuario: ComAcesso | null,
 ): boolean {
-  if (usuario?.perfil === "ADMIN") return true;
-  return sistema.criadoPorId != null && sistema.criadoPorId === usuario?.id;
+  if (pode(usuario, PERMISSOES.SISTEMAS_GERIR)) return true;
+  const ehCriador = sistema.criadoPorId != null && sistema.criadoPorId === usuario?.id;
+  return ehCriador && pode(usuario, PERMISSOES.SISTEMAS_CRIAR);
 }
 
 export type TipoCredencial =

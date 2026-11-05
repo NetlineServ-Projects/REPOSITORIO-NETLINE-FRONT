@@ -6,12 +6,15 @@ import { fetchComToken } from "../../utils/api";
 import { aplicarTema } from "../../utils/tema";
 import SelectPesquisavel from "../../components/selectPesquisavel";
 import { EstadoCarregando, EstadoErro } from "../../components/estados";
+import { Link } from "react-router-dom";
+import { useUsuario } from "../../components/usuarioContext";
+import { ehAdministrador } from "../../utils/permissoes";
 
 export default function ConfiguracoesPage() {
   const { t, i18n } = useTranslation();
+  const { usuarioLogado } = useUsuario();
 
   const [darkTheme, setDarkTheme] = useState<boolean>(false);
-  const [notificacoesEmail, setNotificacoesEmail] = useState<boolean>(true);
   const [idioma, setIdioma] = useState<string>("pt");
 
   const [loading, setLoading] = useState(true);
@@ -35,7 +38,6 @@ export default function ConfiguracoesPage() {
         const temaAtivo = Boolean(usuario.temaEscuro);
 
         setDarkTheme(temaAtivo);
-        setNotificacoesEmail(usuario.notificacoesEmail ?? true);
         setIdioma(usuario.idioma || "pt");
 
         // sincroniza o i18next (troca a UI) — isto já grava em localStorage("idioma")
@@ -87,7 +89,7 @@ export default function ConfiguracoesPage() {
     try {
       await fetchComToken("/usuarios/me/preferencias", {
         method: "PATCH",
-        body: JSON.stringify({ temaEscuro: darkTheme, notificacoesEmail, idioma }),
+        body: JSON.stringify({ temaEscuro: darkTheme, idioma }),
       });
 
       i18n.changeLanguage(idioma);
@@ -152,25 +154,6 @@ export default function ConfiguracoesPage() {
 
           <hr className="border-slate-100" />
 
-          <div className="flex items-center justify-between py-2">
-            <div>
-              <p className="text-sm font-semibold text-slate-700">
-                {t("configuracoes.notificacoesEmail")}
-              </p>
-              <p className="text-xs text-slate-400">
-                {t("configuracoes.notificacoesEmailDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              checked={notificacoesEmail}
-              onChange={(e) => setNotificacoesEmail(e.target.checked)}
-              className="w-4 h-4 text-netline-azul border-slate-300 rounded focus:ring-netline-azul cursor-pointer"
-            />
-          </div>
-
-          <hr className="border-slate-100" />
-
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-2">
             <div>
               <p className="text-sm font-semibold text-slate-700">
@@ -204,6 +187,22 @@ export default function ConfiguracoesPage() {
           </div>
         </form>
       </div>
+
+      {/* Perfis e permissões: só o Administrador os configura */}
+      {ehAdministrador(usuarioLogado) && (
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-700">{t("configuracoes.perfisTitulo")}</p>
+            <p className="text-xs text-slate-400">{t("configuracoes.perfisDescricao")}</p>
+          </div>
+          <Link
+            to="/dashboard/configuracoes/perfis"
+            className="w-full sm:w-auto text-center px-5 py-2.5 bg-netline-azul hover:bg-netline-azul-escuro text-white font-semibold rounded-xl text-xs transition-colors shadow-sm"
+          >
+            {t("configuracoes.perfisAbrir")}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

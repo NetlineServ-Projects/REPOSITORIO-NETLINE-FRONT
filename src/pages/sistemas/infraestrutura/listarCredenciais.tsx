@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 
 interface ListaCredenciaisProps {
   credenciais: Credencial[];
-  ehAdmin: boolean;
+  podeGerir: boolean;
   onEditar: (credencial: Credencial) => void;
   onApagar: (credencial: Credencial) => void;
 }
@@ -47,7 +47,7 @@ function BotaoIcone({
 }
 
 // A aba inteira só abre depois da reautenticação, por isso os valores já vêm no GET
-export default function ListaCredenciais({ credenciais, ehAdmin, onEditar, onApagar }: ListaCredenciaisProps) {
+export default function ListaCredenciais({ credenciais, podeGerir, onEditar, onApagar }: ListaCredenciaisProps) {
   const { t } = useTranslation();
   const [revelados, setRevelados] = useState<Set<number>>(new Set());
   const [copiadoId, setCopiadoId] = useState<number | null>(null);
@@ -105,7 +105,7 @@ export default function ListaCredenciais({ credenciais, ehAdmin, onEditar, onApa
                   Icone={copiado ? IconAprovado : IconCopiar}
                   onClick={() => credencial.valor && copiarValor(credencial.id, credencial.valor)}
                 />
-                {ehAdmin && (
+                {podeGerir && (
                   <>
                     <span className="w-px h-5 bg-slate-200 mx-1" aria-hidden="true" />
                     <BotaoIcone rotulo={t("sistemas.credenciais.editar")} Icone={IconCaneta} onClick={() => onEditar(credencial)} />

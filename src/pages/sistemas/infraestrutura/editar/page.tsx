@@ -28,9 +28,10 @@ import {
 } from "../constantes";
 import SelectPesquisavel from "../../../../components/selectPesquisavel";
 import { EstadoCarregando, EstadoErro } from "../../../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { nome: string; perfil?: string } | null;
+  usuario: { nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 export default function EditarInfraestruturaPage() {
@@ -38,7 +39,7 @@ export default function EditarInfraestruturaPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const podeGerirInfra = pode(usuario, PERMISSOES.SISTEMAS_INFRA_GERIR);
   const { comAcesso } = useAcessoInfraestrutura();
 
   const sistemaId = id ?? "";
@@ -65,7 +66,7 @@ export default function EditarInfraestruturaPage() {
   const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
-    if (!ehAdmin) return;
+    if (!podeGerirInfra) return;
     let cancelado = false;
 
     async function carregar() {
@@ -113,9 +114,9 @@ export default function EditarInfraestruturaPage() {
     return () => {
       cancelado = true;
     };
-  }, [ehAdmin, sistemaId, ambiente, comAcesso, navigate, tentativa]);
+  }, [podeGerirInfra, sistemaId, ambiente, comAcesso, navigate, tentativa]);
 
-  if (!ehAdmin) return <Navigate to={caminhos.sistema} replace />;
+  if (!podeGerirInfra) return <Navigate to={caminhos.sistema} replace />;
 
   const servidoresDaPlataforma = servidores.filter(
     (s) => String(s.plataformaId) === plataformaId,

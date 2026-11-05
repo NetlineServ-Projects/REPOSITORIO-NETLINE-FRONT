@@ -2,7 +2,8 @@ import { useTranslation } from "react-i18next";
 
 interface SistemasHeaderProps {
   total: number;
-  onNovoSistema: () => void;
+  // Sem permissão para criar sistemas, o botão não aparece
+  onNovoSistema?: () => void;
 }
 
 export default function SistemasHeader({ total, onNovoSistema }: SistemasHeaderProps) {
@@ -26,12 +27,14 @@ export default function SistemasHeader({ total, onNovoSistema }: SistemasHeaderP
           {t("sistemas.lista.total")} <span className="font-bold text-white">{total}</span>
         </div>
 
-        <button
-          onClick={onNovoSistema}
-          className="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
-        >
-          <span>{t("sistemas.lista.novoSistema")}</span>
-        </button>
+        {onNovoSistema && (
+          <button
+            onClick={onNovoSistema}
+            className="flex-1 sm:flex-none justify-center px-4 py-2.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-800 text-xs font-semibold rounded-lg transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
+          >
+            <span>{t("sistemas.lista.novoSistema")}</span>
+          </button>
+          )}
       </div>
     </div>
   );

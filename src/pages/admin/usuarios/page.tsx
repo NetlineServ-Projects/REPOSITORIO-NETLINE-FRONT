@@ -13,6 +13,8 @@ import UsuariosTabela from "./usuariosTabela";
 import UsuarioFormulario from "./usuarioFormulario";
 import { useConfirmacao } from "../../../components/confirmacao";
 import { EstadoCarregando, EstadoErro } from "../../../components/estados";
+import { useUsuario } from "../../../components/usuarioContext";
+import { ehAdministrador } from "../../../utils/permissoes";
 
 const FORM_VAZIO: UsuarioFormData = {
   nome: "",
@@ -21,13 +23,14 @@ const FORM_VAZIO: UsuarioFormData = {
   numero: "",
   cargo: "",
   departamento: "",
-  perfil: "FUNCIONARIO",
+  perfilId: "",
 };
 
 export default function UsuariosPage() {
   const { t } = useTranslation();
   const {
     usuarios,
+    perfis,
     carregando,
     aAtualizar,
     // "erro" local (mais abaixo) é o das ações (gravar/eliminar); este é o da primeira carga
@@ -50,6 +53,11 @@ export default function UsuariosPage() {
   const confirmar = useConfirmacao();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { usuarioLogado } = useUsuario();
+  const souAdministrador = ehAdministrador(usuarioLogado);
+  // Só um administrador dá o perfil Administrador ou mexe na conta de um administrador
+  const perfisAtribuiveis = perfis.filter((p) => souAdministrador || !p.administrador);
+  const podeAlterar = (u: Usuario) => souAdministrador || !u.perfil?.administrador;
 
   // =========================================================
   // NOVO UTILIZADOR
@@ -77,7 +85,7 @@ export default function UsuariosPage() {
       numero: usuario.numero || "",
       cargo: usuario.cargo || "",
       departamento: usuario.departamento || "",
-      perfil: usuario.perfil,
+      perfilId: usuario.perfilId,
     });
 
     setErro(null);
@@ -105,6 +113,11 @@ export default function UsuariosPage() {
     e: React.FormEvent,
   ) => {
     e.preventDefault();
+
+    if (formData.perfilId === "") {
+      setErro(t("admin.usuarios.form.perfilObrigatorio"));
+      return;
+    }
 
     setSalvando(true);
     setErro(null);
@@ -184,7 +197,7 @@ export default function UsuariosPage() {
   if (editarPedido && editarPedido !== editarTratado && !carregando) {
     const alvo = usuarios.find((u) => String(u.id) === editarPedido);
     setEditarTratado(editarPedido);
-    if (alvo) abrirEditar(alvo);
+    if (alvo && podeAlterar(alvo)) abrirEditar(alvo);
   }
 
   // =========================================================
@@ -224,6 +237,8 @@ export default function UsuariosPage() {
         editandoId={editandoId}
         formData={formData}
         onFormDataChange={setFormData}
+        perfis={perfisAtribuiveis}
+        perfilBloqueado={editandoId !== null && editandoId === usuarioLogado?.id}
         salvando={salvando}
         erro={erro}
         onVoltar={fecharFormulario}
@@ -282,6 +297,8 @@ export default function UsuariosPage() {
           onVer={(u) => navigate(`/dashboard/usuarios/${u.id}`)}
           onEditar={abrirEditar}
           onEliminar={handleEliminar}
+          podeEditar={podeAlterar}
+          podeEliminar={(u) => podeAlterar(u) && u.id !== usuarioLogado?.id}
         />
       )}
 

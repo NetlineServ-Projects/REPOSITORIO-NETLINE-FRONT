@@ -4,7 +4,8 @@ import type { Documento } from "../../hooks/useDashboardData";
 interface DocumentosRecentesProps {
   documentos: Documento[];
   onVerTodos: () => void;
-  ehAdmin: boolean;
+  // Quem aprova vê também os pendentes e rejeitados, com a coluna do estado
+  mostrarEstado: boolean;
 }
 
 const corEstado: Record<string, string> = {
@@ -13,7 +14,7 @@ const corEstado: Record<string, string> = {
   REJEITADO: "bg-red-100 text-red-700",
 };
 
-export default function DocumentosRecentes({ documentos, onVerTodos, ehAdmin }: DocumentosRecentesProps) {
+export default function DocumentosRecentes({ documentos, onVerTodos, mostrarEstado }: DocumentosRecentesProps) {
   const { t, i18n } = useTranslation();
 
   const formatarData = (data?: string) =>
@@ -43,7 +44,7 @@ export default function DocumentosRecentes({ documentos, onVerTodos, ehAdmin }: 
                     {doc.categoria?.nome || t("dashboard.documentosRecentes.geral")} · {formatarData(doc.dataSubmissao)}
                   </p>
                 </div>
-                {ehAdmin && (
+                {mostrarEstado && (
                   <span className={`shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold ${corEstado[estado]}`}>
                     {t(`comum.status.${estado}`)}
                   </span>
@@ -63,7 +64,7 @@ export default function DocumentosRecentes({ documentos, onVerTodos, ehAdmin }: 
               <th className="py-3 px-4 font-semibold">{t("dashboard.documentosRecentes.nome")}</th>
               <th className="py-3 px-4 font-semibold">{t("dashboard.documentosRecentes.categoria")}</th>
               <th className="py-3 px-4 font-semibold">{t("dashboard.documentosRecentes.data")}</th>
-              {ehAdmin && <th className="py-3 px-4 font-semibold">{t("dashboard.documentosRecentes.statusHeader")}</th>}
+              {mostrarEstado && <th className="py-3 px-4 font-semibold">{t("dashboard.documentosRecentes.statusHeader")}</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -79,7 +80,7 @@ export default function DocumentosRecentes({ documentos, onVerTodos, ehAdmin }: 
                     <td className="py-3 px-4 text-xs">
                       {formatarData(doc.dataSubmissao)}
                     </td>
-                    {ehAdmin && (
+                    {mostrarEstado && (
                       <td className="py-3 px-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${corEstado[estado]}`}>
                           {t(`comum.status.${estado}`)}
@@ -91,7 +92,7 @@ export default function DocumentosRecentes({ documentos, onVerTodos, ehAdmin }: 
               })
             ) : (
               <tr>
-                <td colSpan={ehAdmin ? 4 : 3} className="text-center py-6 text-slate-400 text-xs">
+                <td colSpan={mostrarEstado ? 4 : 3} className="text-center py-6 text-slate-400 text-xs">
                   {t("dashboard.documentosRecentes.nenhumDocumento")}
                 </td>
               </tr>

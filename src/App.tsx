@@ -29,6 +29,8 @@ import { ProvedorConfirmacao } from "./components/confirmacao";
 import NovoDocumentoPage from "./pages/documentos/new/page";
 import { AcessoInfraestruturaLayout } from "./pages/sistemas/infraestrutura/acessoInfraestrutura";
 import { AcessoElevadoLayout } from "./components/acessoElevado";
+import { PERMISSOES, pode, ehAdministrador, type Permissao } from "./utils/permissoes";
+import PerfisPage from "./pages/configuracoes/perfis/page";
 
 import EditarDocumentoPage from "./pages/documentos/[id]/editar/page";
 import EditarSistemaPage from "./pages/sistemas/editar/page";
@@ -42,12 +44,16 @@ function RotaProtegida({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function RotaAdmin({ children }: { children: React.ReactNode }) {
+// Só entra quem tem a permissão (ou, sem permissão indicada, só o Administrador).
+// A API verifica de novo: isto só evita mostrar páginas que dariam 403.
+function RotaComPermissao({ permissao }: { permissao?: Permissao }) {
   const { usuarioLogado } = useUsuario();
   if (!usuarioLogado) return <Navigate to="/autenticacao" replace />;
-  if (usuarioLogado.perfil !== "ADMIN")
-    return <Navigate to="/dashboard" replace />;
-  return <>{children}</>;
+  // Sessão de uma versão antiga, ainda sem perfil: espera que /auth/me o traga
+  if (!usuarioLogado.perfil) return null;
+  const permitido = permissao ? pode(usuarioLogado, permissao) : ehAdministrador(usuarioLogado);
+  if (!permitido) return <Navigate to="/dashboard" replace />;
+  return <Outlet />;
 }
 
 function App() {
@@ -77,13 +83,7 @@ function App() {
             />
             <Route path="categorias" element={<Categorias />} />
             <Route path="sistemas" element={<SistemasPage />} />
-            <Route
-              element={
-                <RotaAdmin>
-                  <Outlet />
-                </RotaAdmin>
-              }
-            >
+            <Route element={<RotaComPermissao permissao={PERMISSOES.DOCUMENTOS_APROVAR} />}>
               <Route path="aprovacoes" element={<AprovacoesPage />} />
               <Route
                 path="aprovacoes/details/:id"
@@ -93,9 +93,16 @@ function App() {
                 path="aprovacoes/edit/:id"
                 element={<AprovacaoEditPage />}
               />
+            </Route>
+            <Route element={<RotaComPermissao permissao={PERMISSOES.UTILIZADORES_GERIR} />}>
               <Route path="usuarios" element={<Usuarios />} />
               <Route path="usuarios/:id" element={<UsuarioDetalhesPage />} />
+            </Route>
+            <Route element={<RotaComPermissao permissao={PERMISSOES.DOCUMENTOS_LIXEIRA} />}>
               <Route path="lixeira" element={<Lixeira />} />
+            </Route>
+            <Route element={<RotaComPermissao />}>
+              <Route path="configuracoes/perfis" element={<PerfisPage />} />
             </Route>
             <Route path="perfil" element={<Perfil />} />
             <Route path="sistemas/:id" element={<AcessoInfraestruturaLayout />}>
@@ -114,9 +121,11 @@ function App() {
                 element={<CredencialPage />}
               />
             </Route>
-            <Route path="plataformas" element={<AcessoElevadoLayout />}>
-              <Route index element={<PlataformasPage />} />
-              <Route path="servidores/:id" element={<ServidorDetalhePage />} />
+            <Route element={<RotaComPermissao permissao={PERMISSOES.INFRA_VER} />}>
+              <Route path="plataformas" element={<AcessoElevadoLayout />}>
+                <Route index element={<PlataformasPage />} />
+                <Route path="servidores/:id" element={<ServidorDetalhePage />} />
+              </Route>
             </Route>
 
             <Route path="configuracoes" element={<ConfiguracoesPage />} />

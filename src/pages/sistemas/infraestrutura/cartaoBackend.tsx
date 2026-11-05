@@ -8,13 +8,13 @@ import { useTranslation } from "react-i18next";
 interface CartaoBackendProps {
   subtitulo: string;
   infraestrutura: SistemaInfraestrutura | null;
-  ehAdmin: boolean;
+  podeGerir: boolean;
   onEditar: () => void;
 }
 
 const CLASSE_LINK = "text-blue-900 hover:underline";
 
-export default function CartaoBackend({ subtitulo, infraestrutura, ehAdmin, onEditar }: CartaoBackendProps) {
+export default function CartaoBackend({ subtitulo, infraestrutura, podeGerir, onEditar }: CartaoBackendProps) {
   const { t } = useTranslation();
   // Registos antigos: o backend estava "na" plataforma de um registo de imagens, que não executa nada
   const plataformaInvalida = Boolean(infraestrutura?.plataforma && infraestrutura.plataforma.tipo !== "CLOUD_BASE_DADOS");
@@ -25,7 +25,7 @@ export default function CartaoBackend({ subtitulo, infraestrutura, ehAdmin, onEd
       subtitulo={subtitulo}
       Icone={IconServer}
       acao={
-        ehAdmin && (
+        podeGerir && (
           <BotaoAcaoInfra onClick={onEditar}>{infraestrutura ? t("sistemas.infraestrutura.backend.editar") : t("sistemas.infraestrutura.backend.registar")}</BotaoAcaoInfra>
         )
       }
@@ -37,7 +37,7 @@ export default function CartaoBackend({ subtitulo, infraestrutura, ehAdmin, onEd
         {plataformaInvalida && (
           <p className="mb-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-800">
             {t("sistemas.infraestrutura.backend.plataformaInvalida", { nome: infraestrutura.plataforma?.nome })}
-            {ehAdmin ? t("sistemas.infraestrutura.backend.plataformaInvalidaAdmin") : ""}
+            {podeGerir ? t("sistemas.infraestrutura.backend.plataformaInvalidaAdmin") : ""}
           </p>
         )}
         <dl className="divide-y divide-slate-100">

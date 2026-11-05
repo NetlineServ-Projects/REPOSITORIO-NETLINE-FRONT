@@ -2,6 +2,9 @@ export const API_ENDPOINTS = {
   USUARIOS: "/usuarios",
   USUARIO_BY_ID: (id: number | string) => `/usuarios/${id}`,
   USUARIO_FOTOGRAFIA: "/usuarios/me/fotografia",
+  PERFIS: "/perfis",
+  PERFIS_PERMISSOES: "/perfis/permissoes",
+  PERFIL_BY_ID: (id: number | string) => `/perfis/${id}`,
 
   PERFIL: "/auth/me",
   ALTERAR_SENHA: "/auth/senha",

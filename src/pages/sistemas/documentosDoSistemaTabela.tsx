@@ -19,8 +19,8 @@ interface DocumentosDoSistemaTabelaProps {
   onBuscaChange: (v: string) => void;
   onEditar: (doc: Documento) => void;
   onApagar: (id: number) => void;
-  // Só ADMIN pode apagar documentos (DELETE /documentos/:id exige o perfil)
-  ehAdmin: boolean;
+  // Só quem tem documentos.eliminar (DELETE /documentos/:id verifica a permissão)
+  podeApagar: boolean;
 }
 
 // Ações de cada documento: as mesmas na tabela (lg+) e nos cartões (ecrãs menores)
@@ -28,12 +28,12 @@ function AcoesDocumento({
   doc,
   onEditar,
   onApagar,
-  ehAdmin,
+  podeApagar,
 }: {
   doc: Documento;
   onEditar: (doc: Documento) => void;
   onApagar: (id: number) => void;
-  ehAdmin: boolean;
+  podeApagar: boolean;
 }) {
   const { t } = useTranslation();
   return (
@@ -61,7 +61,7 @@ function AcoesDocumento({
       >
         {t("comum.editar")}
       </button>
-      {ehAdmin && (
+      {podeApagar && (
         <button
           onClick={() => onApagar(doc.id)}
           className="px-3 py-2 lg:py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/60 text-xs font-semibold rounded-lg transition-colors"
@@ -84,7 +84,7 @@ export default function DocumentosDoSistemaTabela({
   onBuscaChange,
   onEditar,
   onApagar,
-  ehAdmin,
+  podeApagar,
 }: DocumentosDoSistemaTabelaProps) {
   const { t } = useTranslation();
   const [categoriaFiltro, setCategoriaFiltro] = useState<string[]>([]);
@@ -228,7 +228,7 @@ export default function DocumentosDoSistemaTabela({
               )}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <StatusBadge estado={doc.estado} />
-                <AcoesDocumento doc={doc} onEditar={onEditar} onApagar={onApagar} ehAdmin={ehAdmin} />
+                <AcoesDocumento doc={doc} onEditar={onEditar} onApagar={onApagar} podeApagar={podeApagar} />
               </div>
             </li>
           ))
@@ -283,7 +283,7 @@ export default function DocumentosDoSistemaTabela({
                     {dataDoc(doc)}
                   </td>
                   <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                    <AcoesDocumento doc={doc} onEditar={onEditar} onApagar={onApagar} ehAdmin={ehAdmin} />
+                    <AcoesDocumento doc={doc} onEditar={onEditar} onApagar={onApagar} podeApagar={podeApagar} />
                   </td>
                 </tr>
               ))

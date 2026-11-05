@@ -113,6 +113,7 @@
       "nomePlaceholder": "Ex.: João Tembe",
       "email": "E-mail institucional",
       "emailPlaceholder": "utilizador@netline.co.mz",
+      "emailInstitucional": "Só são aceites e-mails institucionais (@netline.co.mz).",
       "senhaInicial": "Palavra-passe inicial",
       "novaSenha": "Nova palavra-passe (opcional)",
       "senhaManter": "Deixe em branco para manter",
@@ -127,7 +128,10 @@
       "departamentoPlaceholder": "Ex.: TI",
       "perfil": "Perfil / permissão",
       "criarConta": "Criar conta",
-      "atualizarConta": "Atualizar conta"
+      "atualizarConta": "Atualizar conta",
+      "escolherPerfil": "Escolha um perfil",
+      "perfilProprio": "Não pode mudar o perfil da sua própria conta.",
+      "perfilObrigatorio": "Escolha o perfil do utilizador."
     },
     "detalhes": {
       "carregando": "A carregar utilizador...",
@@ -149,6 +153,96 @@
       "telemovel": "Telemóvel",
       "cargo": "Cargo",
       "departamento": "Departamento"
+    }
+  },
+  "perfis": {
+    "eyebrow": "CONFIGURAÇÕES",
+    "titulo": "Perfis e permissões",
+    "subtitulo": "Cada utilizador tem um perfil. O perfil decide o que a pessoa vê e pode fazer.",
+    "voltar": "Voltar às configurações",
+    "novo": "Novo perfil",
+    "carregando": "A carregar perfis...",
+    "erroCarregar": "Não foi possível carregar os perfis.",
+    "utilizadores_one": "{{count}} utilizador",
+    "utilizadores_other": "{{count}} utilizadores",
+    "bloqueado": "Bloqueado",
+    "administradorInfo": "O Administrador tem sempre todas as permissões, incluindo gerir perfis, dar o perfil de Administrador e alterar contas de administradores. Não pode ser alterado nem eliminado.",
+    "nome": "Nome do perfil",
+    "nomePlaceholder": "Ex.: Programador",
+    "descricao": "Descrição",
+    "descricaoPlaceholder": "Para que serve este perfil",
+    "permissoes": "Permissões",
+    "dependencia": "Inclui automaticamente: {{nomes}}",
+    "guardar": "Guardar perfil",
+    "aGuardar": "A guardar...",
+    "criar": "Criar perfil",
+    "eliminar": "Eliminar perfil",
+    "criado": "Perfil \"{{nome}}\" criado.",
+    "atualizado": "Perfil \"{{nome}}\" atualizado. As alterações valem já para os utilizadores deste perfil.",
+    "eliminado": "Perfil \"{{nome}}\" eliminado.",
+    "emUso": "Para eliminar este perfil, mude primeiro o perfil dos utilizadores que o têm.",
+    "semAlteracoes": "Sem alterações por guardar.",
+    "modalEliminar": {
+      "titulo": "Eliminar perfil",
+      "mensagem": "Tem a certeza de que quer eliminar o perfil <destaque>{{nome}}</destaque>?",
+      "confirmar": "Eliminar",
+      "aEliminar": "A eliminar..."
+    },
+    "grupos": {
+      "documentos": "Documentos",
+      "sistemas": "Sistemas",
+      "plataformas": "Plataformas",
+      "administracao": "Administração"
+    },
+    "itens": {
+      "documentos.aprovar": {
+        "nome": "Aprovar documentos",
+        "descricao": "Aprovar e rejeitar documentos, ver os pendentes de todos e publicar sem aprovação."
+      },
+      "documentos.eliminar": {
+        "nome": "Eliminar documentos",
+        "descricao": "Mover documentos para a lixeira."
+      },
+      "documentos.sensiveis": {
+        "nome": "Categorias sensíveis",
+        "descricao": "Ver documentos de categorias sensíveis (RH, Financeiro, Contratos...)."
+      },
+      "documentos.lixeira": {
+        "nome": "Lixeira",
+        "descricao": "Ver a lixeira, restaurar e eliminar documentos definitivamente."
+      },
+      "sistemas.criar": {
+        "nome": "Criar sistemas",
+        "descricao": "Registar sistemas e editar os que a própria pessoa criou."
+      },
+      "sistemas.gerir": {
+        "nome": "Gerir todos os sistemas",
+        "descricao": "Editar e eliminar qualquer sistema."
+      },
+      "sistemas.infraestrutura.ver": {
+        "nome": "Ver infraestrutura e credenciais",
+        "descricao": "Ver a aba Infraestrutura dos sistemas e revelar as credenciais."
+      },
+      "sistemas.infraestrutura.gerir": {
+        "nome": "Editar infraestrutura e credenciais",
+        "descricao": "Criar e editar a infraestrutura e as credenciais dos sistemas."
+      },
+      "infraestrutura.ver": {
+        "nome": "Ver plataformas",
+        "descricao": "Ver plataformas, servidores, imagens e domínios."
+      },
+      "infraestrutura.gerir": {
+        "nome": "Gerir plataformas",
+        "descricao": "Criar, editar e eliminar plataformas, servidores, imagens e domínios."
+      },
+      "atividade.ver": {
+        "nome": "Atividade de todos",
+        "descricao": "Ver a atividade de todos os utilizadores (sem ela, só a própria)."
+      },
+      "utilizadores.gerir": {
+        "nome": "Gerir utilizadores",
+        "descricao": "Criar e editar contas e atribuir perfis (nunca o de Administrador)."
+      }
     }
   }
 }

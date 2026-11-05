@@ -39,7 +39,7 @@ interface DetalhesPlataformaProps {
   dominios: Dominio[];
   subdominios: Subdominio[];
   imagens: ImagemContainer[];
-  ehAdmin: boolean;
+  podeGerir: boolean;
   aoVoltar: () => void;
   aoEditar: AoEditarItem;
   aoEliminar: AoEliminarItem;
@@ -64,7 +64,7 @@ export default function DetalhesPlataforma({
   dominios,
   subdominios,
   imagens,
-  ehAdmin,
+  podeGerir,
   aoVoltar,
   aoEditar,
   aoEliminar,
@@ -145,7 +145,7 @@ export default function DetalhesPlataforma({
               {plataforma.urlPainel && (
                 <BotaoIconeCabecalho rotulo={t("plataformas.detalhe.abrirPainel")} Icone={IconLinkExterno} href={plataforma.urlPainel} />
               )}
-              {ehAdmin && (
+              {podeGerir && (
                 <>
                   <BotaoIconeCabecalho
                     rotulo={t("plataformas.detalhe.editar")}
@@ -276,7 +276,7 @@ export default function DetalhesPlataforma({
           <div className="bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/70 shadow-xs">
             <AbaImagens
               imagens={imagensDaPlataforma}
-              ehAdmin={ehAdmin}
+              podeGerir={podeGerir}
               aoEditar={aoEditar}
               aoEliminar={aoEliminar}
             />
@@ -291,7 +291,7 @@ export default function DetalhesPlataforma({
             dominios={dominiosDaPlataforma}
             subdominios={subdominios}
             servidores={servidores}
-            ehAdmin={ehAdmin}
+            podeGerir={podeGerir}
             aoEditar={aoEditar}
             aoEliminar={aoEliminar}
           />

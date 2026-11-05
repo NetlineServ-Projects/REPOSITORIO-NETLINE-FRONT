@@ -7,15 +7,19 @@ import DocumentosRecentes from "../components/dashboard/documentosRecentes";
 import AtividadeRecente from "../components/dashboard/atividadeRecente";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { EstadoErro } from "../components/estados";
+import { PERMISSOES, pode } from "../utils/permissoes";
+import type { UsuarioData } from "../hooks/useDashboardData";
 
 interface DashboardContext {
-  usuario: { nome: string; perfil?: string; id?: number } | null;
-  ehAdmin: boolean;
+  usuario: UsuarioData | null;
 }
 
 export default function DashboardHome() {
   const { t } = useTranslation();
-  const { usuario, ehAdmin } = useOutletContext<DashboardContext>();
+  const { usuario } = useOutletContext<DashboardContext>();
+  const podeAprovar = pode(usuario, PERMISSOES.DOCUMENTOS_APROVAR);
+  const verPlataformas = pode(usuario, PERMISSOES.INFRA_VER);
+  const verTodaAtividade = pode(usuario, PERMISSOES.ATIVIDADE_VER);
   const {
     carregando,
     totalCategorias,
@@ -29,12 +33,12 @@ export default function DashboardHome() {
     atividades,
     erroAtividades,
     recarregar,
-  } = useDashboardData(ehAdmin);
+  } = useDashboardData({ verTodosEstados: podeAprovar, verPlataformas });
   const navigate = useNavigate();
   // Enquanto carrega, as métricas mostram um esqueleto em vez de um "0" que não é verdade
   const valor = (n: number) => (carregando ? null : n);
 
-  const atividadesVisiveis = ehAdmin
+  const atividadesVisiveis = verTodaAtividade
     ? atividades
     : atividades.filter((a) => !a.usuario.id || a.usuario.id === usuario?.id);
 
@@ -55,12 +59,15 @@ export default function DashboardHome() {
         totalSistemas={valor(totalSistemas)}
         totalPlataformas={valor(totalPlataformas)}
         totalCategorias={valor(totalCategorias)}
-        ehAdmin={ehAdmin}
+        mostrarPendentes={podeAprovar}
+        mostrarPlataformas={verPlataformas}
       />
 
       {/* Ações Rápidas */}
       <AcoesRapidas
-        ehAdmin={ehAdmin}
+        podeAprovar={podeAprovar}
+        acessoPlataformas={pode(usuario, PERMISSOES.INFRA_GERIR) ? "gerir" : verPlataformas ? "ver" : undefined}
+        podeGerirSistemas={pode(usuario, PERMISSOES.SISTEMAS_GERIR)}
         onNavegar={(aba: string) => navigate(`/dashboard/${aba}`)}
       />
 
@@ -75,13 +82,13 @@ export default function DashboardHome() {
           <DocumentosRecentes
             documentos={documentosRecentes}
             onVerTodos={() => navigate("/dashboard/documentos")}
-            ehAdmin={ehAdmin}
+            mostrarEstado={podeAprovar}
           />
         )}
         {erroAtividades ? (
           <EstadoErro titulo={t("dashboard.atividadeRecente.indisponivel")} mensagem={erroAtividades} onTentarNovamente={recarregar} />
         ) : (
-          <AtividadeRecente atividades={atividadesVisiveis} ehAdmin={ehAdmin} />
+          <AtividadeRecente atividades={atividadesVisiveis} verTodas={verTodaAtividade} />
         )}
       </div>
     </div>

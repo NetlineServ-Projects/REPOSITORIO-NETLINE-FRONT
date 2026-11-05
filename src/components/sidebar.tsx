@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUsuario } from "./usuarioContext";
+import { PERMISSOES, pode } from "../utils/permissoes";
 import logoNetline from "../assets/netline.jpg";
 import {
   IconHome,
@@ -33,7 +34,10 @@ interface SeccaoMenu {
 export default function Sidebar({ fechada = false }: SidebarProps) {
   const { t } = useTranslation();
   const { usuarioLogado } = useUsuario();
-  const ehAdmin = usuarioLogado?.perfil === "ADMIN";
+  const podeAprovar = pode(usuarioLogado, PERMISSOES.DOCUMENTOS_APROVAR);
+  const podeLixeira = pode(usuarioLogado, PERMISSOES.DOCUMENTOS_LIXEIRA);
+  const podePlataformas = pode(usuarioLogado, PERMISSOES.INFRA_VER);
+  const podeUtilizadores = pode(usuarioLogado, PERMISSOES.UTILIZADORES_GERIR);
 
   const seccoesMenu: SeccaoMenu[] = [
     {
@@ -54,7 +58,7 @@ export default function Sidebar({ fechada = false }: SidebarProps) {
           label: t("sidebar.itens.categorias"),
           icon: <IconPasta />,
         },
-        ...(ehAdmin
+        ...(podeAprovar
           ? [
               {
                 path: "/dashboard/aprovacoes",
@@ -63,7 +67,7 @@ export default function Sidebar({ fechada = false }: SidebarProps) {
               },
             ]
           : []),
-        ...(ehAdmin
+        ...(podeLixeira
           ? [
               {
                 path: "/dashboard/lixeira",
@@ -82,17 +86,21 @@ export default function Sidebar({ fechada = false }: SidebarProps) {
           label: t("sidebar.itens.sistemasDesenvolvidos"),
           icon: <IconSistemas />,
         },
-        {
-          path: "/dashboard/plataformas",
-          label: t("sidebar.itens.plataformas"),
-          icon: <IconPlataforma />,
-        },
+        ...(podePlataformas
+          ? [
+              {
+                path: "/dashboard/plataformas",
+                label: t("sidebar.itens.plataformas"),
+                icon: <IconPlataforma />,
+              },
+            ]
+          : []),
       ],
     },
     {
       titulo: t("sidebar.seccoes.configuracoes"),
       itens: [
-        ...(ehAdmin
+        ...(podeUtilizadores
           ? [
               {
                 path: "/dashboard/usuarios",

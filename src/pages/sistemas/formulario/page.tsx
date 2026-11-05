@@ -26,6 +26,9 @@ interface SistemaFormularioProps {
   salvando: boolean;
   onCancelar: () => void;
   onSubmit: (dados: Record<string, unknown>) => Promise<void>;
+  // Alojamento do frontend e endereços (domínio, servidor): só quem gere a infraestrutura
+  // dos sistemas os vê e altera. Sem isto, os campos não aparecem nem são enviados.
+  gerirAlojamento?: boolean;
 }
 
 function ListaEditavel({
@@ -118,6 +121,7 @@ export default function SistemaFormulario({
   salvando,
   onCancelar,
   onSubmit,
+  gerirAlojamento = false,
 }: SistemaFormularioProps) {
   const emEdicao = Boolean(sistemaExistente);
   const { t } = useTranslation();
@@ -170,6 +174,7 @@ export default function SistemaFormulario({
   const [servidores, setServidores] = useState<OpcaoHospedagem[]>([]);
 
   useEffect(() => {
+    if (!gerirAlojamento) return;
     let cancelado = false;
     Promise.all([listarPlataformas(), listarDominios(), listarServidores()])
       .then(([plt, dom, srv]) => {
@@ -187,7 +192,7 @@ export default function SistemaFormulario({
     return () => {
       cancelado = true;
     };
-  }, []);
+  }, [gerirAlojamento]);
 
   const [devs, setDevs] = useState<string[]>(
     sistemaExistente?.desenvolvedores ?? [],
@@ -232,14 +237,16 @@ export default function SistemaFormulario({
       tecnologiasBackend: techsBackend,
       tecnologiasInfraestrutura: techsInfra,
       repositorioUrl: repositorioUrl || undefined,
-      // Com subdomínio, o endereço calcula-se sozinho: o URL à parte não é usado
-      urlProducao: producao.temSubdominio ? undefined : producao.url.trim() || undefined,
-      urlTestes: testes.temSubdominio ? null : testes.url.trim() || null,
-      plataformaFrontendId: plataformaFrontendId ? Number(plataformaFrontendId) : null,
-      subdominios: {
-        PRODUCAO: montarSubdominio(producao, tinhaSubdominio(sistemaExistente, "PRODUCAO")),
-        TESTES: montarSubdominio(testes, tinhaSubdominio(sistemaExistente, "TESTES")),
-      },
+      ...(gerirAlojamento && {
+        // Com subdomínio, o endereço calcula-se sozinho: o URL à parte não é usado
+        urlProducao: producao.temSubdominio ? undefined : producao.url.trim() || undefined,
+        urlTestes: testes.temSubdominio ? null : testes.url.trim() || null,
+        plataformaFrontendId: plataformaFrontendId ? Number(plataformaFrontendId) : null,
+        subdominios: {
+          PRODUCAO: montarSubdominio(producao, tinhaSubdominio(sistemaExistente, "PRODUCAO")),
+          TESTES: montarSubdominio(testes, tinhaSubdominio(sistemaExistente, "TESTES")),
+        },
+      }),
       responsavelTecnico: responsavelTecnico || undefined,
       versaoAtual: versaoAtual || undefined,
     });
@@ -372,6 +379,7 @@ export default function SistemaFormulario({
             />
           </div>
 
+          {gerirAlojamento && (
           <div>
             <label htmlFor="sistema-plataforma-frontend" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
               {t("sistemas.formulario.plataformaFrontend")}
@@ -387,6 +395,7 @@ export default function SistemaFormulario({
               {t("sistemas.formulario.plataformaFrontendAjuda")}
             </p>
           </div>
+          )}
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
@@ -414,6 +423,8 @@ export default function SistemaFormulario({
             />
           </div>
 
+          {gerirAlojamento && (
+          <>
           <EnderecoAmbiente
             titulo={rotuloAmbiente("PRODUCAO")}
             estado={producao}
@@ -430,6 +441,8 @@ export default function SistemaFormulario({
             servidores={servidores}
             tinhaSubdominio={tinhaSubdominio(sistemaExistente, "TESTES")}
           />
+          </>
+          )}
 
           <ListaEditavel
             label={t("sistemas.formulario.equipa")}
