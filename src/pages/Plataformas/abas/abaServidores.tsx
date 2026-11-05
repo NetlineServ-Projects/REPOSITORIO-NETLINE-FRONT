@@ -12,6 +12,8 @@ import type {
   AoEliminarItem,
 } from "../../../types/plataformaTipos";
 import type { Plataforma, Servidor } from "../../../types/plataforma";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 interface AbaServidoresProps {
   servidores: Servidor[];
@@ -33,12 +35,15 @@ export default function AbaServidores({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(servidores);
+
   if (servidores.length === 0) {
     return <EstadoVazio mensagem={t("plataformas.abas.servidores.vazio")} />;
   }
 
   // O que a linha da tabela e o cartão do telemóvel partilham
-  const linhas = servidores.map((servidor) => {
+  const linhas = paginacao.itens.map((servidor) => {
     const abrirDetalhes = () => navigate(caminhoDetalheServidor(servidor.id));
     return {
       servidor,
@@ -163,6 +168,9 @@ export default function AbaServidores({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="px-4 pb-4">
+        <Paginacao {...paginacao} />
       </div>
     </div>
   );

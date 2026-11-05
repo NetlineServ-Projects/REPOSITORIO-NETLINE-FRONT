@@ -17,6 +17,8 @@ import type {
   ImagemContainer,
   TipoPlataforma,
 } from "../../../types/plataforma";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 /* -------------------------------------------------------------------------- */
 /*  O número que cada tipo mostra no cartão (um só, para o cartão ficar leve)  */
@@ -140,9 +142,12 @@ export default function AbaPlataformas({
     return <EstadoVazio mensagem={t("plataformas.abas.plataformas.vazio")} />;
   }
 
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(plataformas);
+
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(min(250px,100%),1fr))] gap-4 sm:gap-5">
-      {plataformas.map((plataforma) => {
+      {paginacao.itens.map((plataforma) => {
         const totais: Record<Metrica, number> = {
           servidores:
             plataforma.totais?.servidores ??
@@ -167,6 +172,7 @@ export default function AbaPlataformas({
           />
         );
       })}
+      <Paginacao {...paginacao} />
     </div>
   );
 }

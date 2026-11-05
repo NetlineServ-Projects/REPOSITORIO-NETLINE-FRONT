@@ -11,6 +11,8 @@ import { classificarTipo, OPCOES_TIPO } from "../../utils/tipoDocumento";
 import { API_URL } from "../../utils/api";
 import { useTranslation } from "react-i18next";
 import i18n from "../../lang/i18n";
+import { usePaginacao } from "../../hooks/usePaginacao";
+import Paginacao from "../../components/paginacao";
 
 interface DocumentosDoSistemaTabelaProps {
   documentos: Documento[];
@@ -143,6 +145,9 @@ export default function DocumentosDoSistemaTabela({
     setTipoFiltro([]);
   }, []);
 
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(documentosFiltrados);
+
   return (
     <div className="bg-white rounded-xl border border-slate-100 shadow-xs overflow-hidden">
       {/* Barra de Pesquisa e Filtros Customizados */}
@@ -210,7 +215,7 @@ export default function DocumentosDoSistemaTabela({
       {/* Ecrãs menores: um cartão por documento, com as mesmas ações da tabela */}
       <ul className="lg:hidden divide-y divide-slate-100">
         {documentosFiltrados.length > 0 ? (
-          documentosFiltrados.map((doc) => (
+          paginacao.itens.map((doc) => (
             <li key={doc.id} className="p-4 space-y-2.5">
               <div className="flex items-start gap-2.5 min-w-0">
                 <IconPasta className="text-blue-900 shrink-0 mt-0.5" />
@@ -254,7 +259,7 @@ export default function DocumentosDoSistemaTabela({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {documentosFiltrados.length > 0 ? (
-              documentosFiltrados.map((doc) => (
+              paginacao.itens.map((doc) => (
                 <tr
                   key={doc.id}
                   className="hover:bg-slate-50/70 transition-colors"
@@ -299,6 +304,9 @@ export default function DocumentosDoSistemaTabela({
             )}
           </tbody>
         </table>
+      </div>
+      <div className="px-4 pb-4">
+        <Paginacao {...paginacao} />
       </div>
     </div>
   );

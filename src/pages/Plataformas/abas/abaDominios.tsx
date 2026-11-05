@@ -11,6 +11,8 @@ import type {
 } from "../../../types/plataforma";
 import { localeDatas } from "../../../types/plataformaConstantes";
 import { ROTULO_AMBIENTE } from "../../../utils/servidor";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 interface AbaDominiosProps {
   dominios: Dominio[];
@@ -87,6 +89,9 @@ export default function AbaDominios({
   aoEliminar,
 }: AbaDominiosProps) {
   const { t } = useTranslation();
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(dominios);
+
   return (
     <div className="space-y-6">
       <p className="text-xs text-slate-500">
@@ -97,7 +102,7 @@ export default function AbaDominios({
         <EstadoVazio mensagem={t("plataformas.abas.dominios.vazio")} />
       ) : (
         <div className="space-y-6">
-          {dominios.map((dominio) => {
+          {paginacao.itens.map((dominio) => {
             const subdominiosDoDominio = subdominios.filter(
               (s) => s.dominioId === dominio.id
             );
@@ -216,6 +221,7 @@ export default function AbaDominios({
           })}
         </div>
       )}
+      <Paginacao {...paginacao} />
     </div>
   );
 }

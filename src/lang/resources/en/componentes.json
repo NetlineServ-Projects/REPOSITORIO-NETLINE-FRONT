@@ -66,5 +66,11 @@
   "vista": {
     "tabela": "Table",
     "grelha": "Grid"
+  },
+  "paginacao": {
+    "rotulo": "Pagination",
+    "anterior": "Previous",
+    "seguinte": "Next",
+    "intervalo": "{{primeiro}}–{{ultimo}} of {{total}}"
   }
 }

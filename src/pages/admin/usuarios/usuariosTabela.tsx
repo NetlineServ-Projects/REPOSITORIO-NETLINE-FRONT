@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import type { Usuario } from "../../../hooks/useUsuariosData";
 import { API_URL } from "../../../utils/api";
 import { EstadoVazio } from "../../../components/estados";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 interface UsuariosTabelaProps {
   usuarios: Usuario[];
@@ -71,6 +73,9 @@ function AcoesUsuario({ u, onVer, onEditar, onEliminar, podeEditar, podeEliminar
 // A primeira carga (e o erro dela) é tratada pela página
 export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaProps) {
   const { t } = useTranslation();
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(usuarios);
+
   if (usuarios.length === 0) {
     return <EstadoVazio mensagem={t("admin.usuarios.nenhum")} />;
   }
@@ -79,7 +84,7 @@ export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaPro
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         {/* Ecrãs menores: um cartão por utilizador */}
         <ul className="lg:hidden divide-y divide-slate-100">
-          {usuarios.map((u) => (
+          {paginacao.itens.map((u) => (
             <li key={u.id} className="p-4 flex items-start gap-3">
               <Avatar u={u} />
               <div className="min-w-0 flex-1">
@@ -108,7 +113,7 @@ export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaPro
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {usuarios.map((u) => (
+              {paginacao.itens.map((u) => (
                 <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
@@ -132,6 +137,9 @@ export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaPro
             </tbody>
           </table>
         </div>
+      <div className="px-4 pb-4">
+        <Paginacao {...paginacao} />
+      </div>
     </div>
   );
 }
