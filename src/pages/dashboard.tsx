@@ -59,10 +59,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 relative overflow-x-hidden">
-      {/* Sidebar com posicionamento dinâmico no mobile */}
+    <div className="flex min-h-screen bg-slate-50 relative overflow-x-clip">
+      {/* overflow-x-clip e não hidden: o hidden desligaria o sticky da barra lateral */}
+      {/* Sidebar: no telemóvel desliza por cima; a partir de md fica parada com a altura do ecrã
+          enquanto o conteúdo faz scroll */}
       <div
-        className={`fixed md:static inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
+        className={`fixed md:sticky md:top-0 md:h-dvh md:self-start inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out ${
           sidebarFechada
             ? "-translate-x-full md:translate-x-0"
             : "translate-x-0"
