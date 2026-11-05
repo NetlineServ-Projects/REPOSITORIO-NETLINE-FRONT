@@ -12,6 +12,8 @@ import ModalMotivoRejeicao from "./modalMotivoRejeicao";
 import { toast } from "sonner";
 import SelectPesquisavel from "../../../components/selectPesquisavel";
 import { EstadoCarregando, EstadoErro, EstadoVazio, IndicadorAtualizar } from "../../../components/estados";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 export default function AprovacoesPage() {
   const { t } = useTranslation();
@@ -66,6 +68,9 @@ export default function AprovacoesPage() {
   const totalPendentes = documentos.filter(
     (d) => d.estado === "PENDENTE",
   ).length;
+
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(documentosFiltrados);
 
   if (loading) {
     return <EstadoCarregando mensagem={t("admin.aprovacoes.carregando")} />;
@@ -153,7 +158,7 @@ export default function AprovacoesPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {documentosFiltrados.length > 0 ? (
-                  documentosFiltrados.map((doc) => (
+                  paginacao.itens.map((doc) => (
                     <DocumentoRow
                       key={doc.id}
                       doc={doc}
@@ -205,7 +210,7 @@ export default function AprovacoesPage() {
       )}
       <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 ${modoExibicao === "tabela" ? "xl:hidden" : ""}`}>
         {documentosFiltrados.length > 0 ? (
-          documentosFiltrados.map((doc) => (
+          paginacao.itens.map((doc) => (
             <DocumentoCard
               key={doc.id}
               doc={doc}
@@ -255,6 +260,7 @@ export default function AprovacoesPage() {
         onConfirmar={confirmarRejeicao}
         onCancelar={() => setIdParaRejeitar(null)}
       />
+      <Paginacao {...paginacao} />
     </div>
   );
 }

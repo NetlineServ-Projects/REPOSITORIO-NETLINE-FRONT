@@ -8,6 +8,8 @@ import {
   ROTULOS_ORIGEM_IMAGEM,
   localeDatas,
 } from "../../../types/plataformaConstantes";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 interface AbaImagensProps {
   imagens: ImagemContainer[];
@@ -56,6 +58,9 @@ export default function AbaImagens({
   aoEliminar,
 }: AbaImagensProps) {
   const { t } = useTranslation();
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(imagens);
+
   if (imagens.length === 0) {
     return <EstadoVazio mensagem={t("plataformas.abas.imagens.vazio")} />;
   }
@@ -78,7 +83,7 @@ export default function AbaImagens({
     <div className="@container bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
       {/* Espaço estreito: um cartão por imagem (a tabela não cabe) */}
       <ul className="@2xl:hidden divide-y divide-slate-100">
-        {imagens.map((imagem) => (
+        {paginacao.itens.map((imagem) => (
           <li key={imagem.id} className="p-4 flex items-start gap-3">
             <div className="min-w-0 flex-1 space-y-1.5">
               <div>
@@ -114,7 +119,7 @@ export default function AbaImagens({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700">
-            {imagens.map((imagem) => (
+            {paginacao.itens.map((imagem) => (
               <tr
                 key={imagem.id}
                 className="hover:bg-slate-50/60 transition-colors"
@@ -145,6 +150,9 @@ export default function AbaImagens({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="px-4 pb-4">
+        <Paginacao {...paginacao} />
       </div>
     </div>
   );

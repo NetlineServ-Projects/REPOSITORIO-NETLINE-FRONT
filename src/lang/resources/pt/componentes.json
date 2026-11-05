@@ -66,5 +66,11 @@
   "vista": {
     "tabela": "Tabela",
     "grelha": "Grelha"
+  },
+  "paginacao": {
+    "rotulo": "Paginação",
+    "anterior": "Anterior",
+    "seguinte": "Seguinte",
+    "intervalo": "{{primeiro}}–{{ultimo}} de {{total}}"
   }
 }

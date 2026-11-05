@@ -15,6 +15,8 @@ import type { Categoria } from "../../types/documento";
 import { toast } from "sonner";
 import { EstadoCarregando, EstadoErro, EstadoVazio, IndicadorAtualizar } from "../../components/estados";
 import { PERMISSOES, pode, type PerfilResumo } from "../../utils/permissoes";
+import { usePaginacao } from "../../hooks/usePaginacao";
+import Paginacao from "../../components/paginacao";
 
 interface DashboardContext {
   usuario: { nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
@@ -133,6 +135,9 @@ export default function CategoriasPage() {
     tipoFiltro.length > 0 ||
     mesFiltro.length > 0 ||
     anoFiltro.length > 0;
+
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(documentosDaCategoria);
 
   if (loading) {
     return <EstadoCarregando mensagem={t("categorias.carregando")} />;
@@ -323,7 +328,7 @@ export default function CategoriasPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {documentosDaCategoria.length > 0 ? (
-                  documentosDaCategoria.map((doc) => (
+                  paginacao.itens.map((doc) => (
                     <DocumentoRow
                       key={doc.id}
                       doc={doc}
@@ -371,7 +376,7 @@ export default function CategoriasPage() {
       )}
       <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 ${modoExibicao === "tabela" ? "xl:hidden" : ""}`}>
         {documentosDaCategoria.length > 0 ? (
-          documentosDaCategoria.map((doc) => (
+          paginacao.itens.map((doc) => (
             <DocumentoCard
               key={doc.id}
               doc={doc}
@@ -421,6 +426,7 @@ export default function CategoriasPage() {
         onConfirmar={confirmarApagar}
         onCancelar={() => setDocumentoParaApagar(null)}
       />
+      <Paginacao {...paginacao} />
     </div>
   );
 }

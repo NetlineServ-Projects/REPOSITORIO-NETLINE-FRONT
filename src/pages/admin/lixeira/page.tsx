@@ -5,6 +5,8 @@ import { useLixeiraData } from "../../../hooks/useLixeiraData";
 import { useConfirmacao } from "../../../components/confirmacao";
 import { useAcoesEmCurso } from "../../../hooks/useAcoesEmCurso";
 import { EstadoCarregando, EstadoErro, EstadoVazio, IndicadorAtualizar } from "../../../components/estados";
+import { usePaginacao } from "../../../hooks/usePaginacao";
+import Paginacao from "../../../components/paginacao";
 
 // Dias até à exclusão definitiva (vermelho quando faltam 5 ou menos)
 function BadgeDiasRestantes({ dias }: { dias: number }) {
@@ -189,6 +191,9 @@ export default function LixeiraPage() {
   // LOADING
   // =========================================================
 
+  // Mostra 10 de cada vez
+  const paginacao = usePaginacao(documentosFiltrados);
+
   if (loading) {
     return <EstadoCarregando mensagem={t("admin.lixeira.carregando")} />;
   }
@@ -270,7 +275,7 @@ export default function LixeiraPage() {
           <>
           {/* Telemóvel: um cartão por documento, com as mesmas ações da tabela */}
           <ul className="xl:hidden divide-y divide-slate-100">
-            {documentosFiltrados.map((documento) => {
+            {paginacao.itens.map((documento) => {
               const titulo = documento.titulo || t("comum.documentoSemTitulo");
               const diasRestantes = calcularDiasRestantes(documento.apagadoEm);
 
@@ -325,7 +330,7 @@ export default function LixeiraPage() {
               </thead>
 
               <tbody className="divide-y divide-slate-100 text-sm">
-                {documentosFiltrados.map((documento) => {
+                {paginacao.itens.map((documento) => {
                   const titulo =
                     documento.titulo || t("comum.documentoSemTitulo");
 
@@ -410,6 +415,7 @@ export default function LixeiraPage() {
         />
       )}
 
+      <Paginacao {...paginacao} />
     </div>
   );
 }
