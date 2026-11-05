@@ -5,9 +5,10 @@ import { useTranslation } from "react-i18next";
 import { useSistemasData, podeGerirSistema } from "../../../hooks/useSistemasData";
 import SistemaFormulario from "../formulario/page";
 import { EstadoCarregando, EstadoErro } from "../../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { id?: number; nome: string; perfil?: string } | null;
+  usuario: { id?: number; nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 export default function EditarSistemaPage() {
@@ -68,6 +69,7 @@ export default function EditarSistemaPage() {
       salvando={salvando}
       onCancelar={() => navigate(caminhoDoSistema)}
       onSubmit={handleSubmit}
+      gerirAlojamento={pode(usuario, PERMISSOES.SISTEMAS_INFRA_GERIR)}
     />
   );
 }

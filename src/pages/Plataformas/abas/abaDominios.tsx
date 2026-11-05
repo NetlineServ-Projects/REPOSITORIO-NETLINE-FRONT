@@ -16,7 +16,7 @@ interface AbaDominiosProps {
   dominios: Dominio[];
   subdominios: Subdominio[];
   servidores: Servidor[];
-  ehAdmin: boolean;
+  podeGerir: boolean;
   aoEditar: AoEditarItem;
   aoEliminar: AoEliminarItem;
 }
@@ -82,7 +82,7 @@ export default function AbaDominios({
   dominios,
   subdominios,
   servidores,
-  ehAdmin,
+  podeGerir,
   aoEditar,
   aoEliminar,
 }: AbaDominiosProps) {
@@ -128,7 +128,7 @@ export default function AbaDominios({
                     </div>
                   </div>
 
-                  {ehAdmin && (
+                  {podeGerir && (
                     <AcoesItem
                       tituloEditar={t("plataformas.abas.dominios.editar")}
                       tituloEliminar={t("plataformas.abas.dominios.eliminar")}

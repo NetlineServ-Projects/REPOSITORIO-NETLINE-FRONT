@@ -5,9 +5,10 @@ import { useDocumentosData } from "../../../hooks/useDocumentosData";
 import { toast } from "sonner";
 import { IconUpload } from "../../../components/icons";
 import SelectPesquisavel from "../../../components/selectPesquisavel";
+import { PERMISSOES, pode, type PerfilResumo } from "../../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { nome: string; perfil?: string } | null;
+  usuario: { nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 export default function NovoDocumentoPage() {
@@ -15,7 +16,7 @@ export default function NovoDocumentoPage() {
   const navigate = useNavigate();
   const { categorias, criarDocumento } = useDocumentosData();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const publicaDireto = pode(usuario, PERMISSOES.DOCUMENTOS_APROVAR);
 
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -49,7 +50,7 @@ export default function NovoDocumentoPage() {
 
       await criarDocumento(formData);
       toast.success(
-        ehAdmin
+        publicaDireto
           ? t("documentos.publicadoComSucesso")
           : t("documentos.submetidoParaAprovacao")
       );
@@ -147,7 +148,7 @@ export default function NovoDocumentoPage() {
         </div>
 
         {/* Aviso para funcionario sobre fluxo de aprovação */}
-        {!ehAdmin && (
+        {!publicaDireto && (
           <p className="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
             {t("documentos.avisoAprovacao")}
           </p>
@@ -167,8 +168,8 @@ export default function NovoDocumentoPage() {
             className="flex-1 py-2.5 bg-netline-azul hover:bg-slate-800 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {salvando
-              ? ehAdmin ? t("documentos.aGuardar") : t("documentos.aSubmeter")
-              : ehAdmin ? t("documentos.guardar") : t("documentos.submeter")}
+              ? publicaDireto ? t("documentos.aGuardar") : t("documentos.aSubmeter")
+              : publicaDireto ? t("documentos.guardar") : t("documentos.submeter")}
           </button>
         </div>
       </form>

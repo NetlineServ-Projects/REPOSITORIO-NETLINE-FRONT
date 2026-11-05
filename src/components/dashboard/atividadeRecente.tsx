@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 export interface Atividade {
   id: string;
-  usuario: { id: number; nome: string; perfil?: string };
+  usuario: { id: number; nome: string; perfil?: { id: number; nome: string } | null };
   acao: string;
   documento?: { id: string | number; titulo: string } | null;
   sistema?: { id: string | number; nome: string } | null;
@@ -12,27 +12,33 @@ export interface Atividade {
 
 interface AtividadeRecenteProps {
   atividades: Atividade[];
-  ehAdmin?: boolean;
+  // Com a permissão atividade.ver vê-se a atividade de todos, com filtro por perfil
+  verTodas?: boolean;
 }
 
 export default function AtividadeRecente({
   atividades,
-  ehAdmin = false,
+  verTodas = false,
 }: AtividadeRecenteProps) {
   const { t, i18n } = useTranslation();
-  const [filtroPerfil, setFiltroPerfil] = useState<"TODOS" | "ADMIN" | "FUNCIONARIO">("TODOS");
+  // null = todos os perfis; senão, o nome do perfil escolhido
+  const [filtroPerfil, setFiltroPerfil] = useState<string | null>(null);
+
+  // Os filtros são os perfis de quem aparece na lista
+  const perfisPresentes = useMemo(
+    () => [...new Set(atividades.map((a) => a.usuario.perfil?.nome).filter((n): n is string => Boolean(n)))],
+    [atividades],
+  );
 
   const atividadesFiltradas = useMemo(() => {
-    if (!ehAdmin || filtroPerfil === "TODOS") {
-      return atividades;
-    }
-    return atividades.filter((item) => {
-      const perfilItem = item.usuario.perfil?.toUpperCase();
-      if (filtroPerfil === "ADMIN") return perfilItem === "ADMIN";
-      if (filtroPerfil === "FUNCIONARIO") return perfilItem !== "ADMIN";
-      return true;
-    });
-  }, [atividades, ehAdmin, filtroPerfil]);
+    if (!verTodas || filtroPerfil === null) return atividades;
+    return atividades.filter((item) => item.usuario.perfil?.nome === filtroPerfil);
+  }, [atividades, verTodas, filtroPerfil]);
+
+  const classeFiltro = (ativo: boolean) =>
+    `shrink-0 px-2.5 py-1.5 sm:py-1 rounded-md font-semibold transition-all cursor-pointer ${
+      ativo ? "bg-white text-slate-800 shadow-xs" : "text-slate-500 hover:text-slate-800"
+    }`;
 
   const obterCorAcao = (acao: string) => {
     const acaoLower = acao.toLowerCase();
@@ -55,53 +61,28 @@ export default function AtividadeRecente({
         <div className="flex flex-col sm:flex-row sm:items-center lg:flex-col lg:items-start justify-between gap-2 mb-4">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-slate-800">
-              {ehAdmin
+              {verTodas
                 ? t("dashboard.atividadeRecente.tituloAdmin")
                 : t("dashboard.atividadeRecente.minhasAtividades")}
             </h3>
             <p className="text-[11px] text-slate-400">
-              {ehAdmin
+              {verTodas
                 ? t("dashboard.atividadeRecente.subtituloAdmin")
                 : t("dashboard.atividadeRecente.subtituloProprio")}
             </p>
           </div>
 
-          {/* Filtros para Administrador */}
-          {ehAdmin && (
+          {/* Filtro por perfil, para quem vê a atividade de todos */}
+          {verTodas && perfisPresentes.length > 1 && (
             <div className="inline-flex max-w-full overflow-x-auto whitespace-nowrap p-0.5 bg-slate-100 rounded-lg text-[11px]">
-              <button
-                type="button"
-                onClick={() => setFiltroPerfil("TODOS")}
-                className={`shrink-0 px-2.5 py-1.5 sm:py-1 rounded-md font-semibold transition-all cursor-pointer ${
-                  filtroPerfil === "TODOS"
-                    ? "bg-white text-slate-800 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
+              <button type="button" onClick={() => setFiltroPerfil(null)} className={classeFiltro(filtroPerfil === null)}>
                 {t("dashboard.atividadeRecente.filtroTodos")}
               </button>
-              <button
-                type="button"
-                onClick={() => setFiltroPerfil("FUNCIONARIO")}
-                className={`shrink-0 px-2.5 py-1.5 sm:py-1 rounded-md font-semibold transition-all cursor-pointer ${
-                  filtroPerfil === "FUNCIONARIO"
-                    ? "bg-white text-slate-800 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                {t("dashboard.atividadeRecente.filtroFuncionarios")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setFiltroPerfil("ADMIN")}
-                className={`shrink-0 px-2.5 py-1.5 sm:py-1 rounded-md font-semibold transition-all cursor-pointer ${
-                  filtroPerfil === "ADMIN"
-                    ? "bg-white text-slate-800 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                {t("dashboard.atividadeRecente.filtroAdmins")}
-              </button>
+              {perfisPresentes.map((nome) => (
+                <button key={nome} type="button" onClick={() => setFiltroPerfil(nome)} className={classeFiltro(filtroPerfil === nome)}>
+                  {nome}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -116,7 +97,6 @@ export default function AtividadeRecente({
         ) : (
           atividadesFiltradas.map((item) => {
             const alvo = item.documento?.titulo ?? item.sistema?.nome;
-            const ehItemAdmin = item.usuario.perfil === "ADMIN";
 
             return (
               <div key={item.id} className="flex items-start gap-3 text-xs">
@@ -128,15 +108,9 @@ export default function AtividadeRecente({
                     <strong className="text-slate-900 font-bold">
                       {item.usuario.nome}
                     </strong>
-                    {ehAdmin && (
-                      <span
-                        className={`ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-semibold ${
-                          ehItemAdmin
-                            ? "bg-indigo-50 text-indigo-700 border border-indigo-100"
-                            : "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        {ehItemAdmin ? t("dashboard.atividadeRecente.perfilAdmin") : t("dashboard.atividadeRecente.perfilFuncionario")}
+                    {verTodas && item.usuario.perfil && (
+                      <span className="ml-1.5 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                        {item.usuario.perfil.nome}
                       </span>
                     )}{" "}
                     <span className="text-slate-600">{item.acao}</span>{" "}

@@ -3,6 +3,7 @@ import { useCarregamento } from "./useCarregamento";
 import i18n from "../lang/i18n";
 import { fetchComToken } from "../utils/api";
 import { API_ENDPOINTS } from "../data/client/endpoint";
+import type { PerfilResumo } from "../utils/permissoes";
 
 export interface Usuario {
   id: number;
@@ -10,8 +11,10 @@ export interface Usuario {
   email: string;
   numero: string;
   cargo: string;
-  departamento: string; // NOVO
-  perfil: "ADMIN" | "FUNCIONARIO";
+  departamento: string;
+  perfilId: number;
+  perfil: PerfilResumo;
+  ativo?: boolean;
   fotografia?: string | null;
   dataCriacao?: string;
 }
@@ -22,12 +25,15 @@ export interface UsuarioFormData {
   senha: string;
   numero: string;
   cargo: string;
-  departamento: string; // NOVO
-  perfil: "ADMIN" | "FUNCIONARIO";
+  departamento: string;
+  // "" enquanto nenhum perfil foi escolhido
+  perfilId: number | "";
 }
 
 export function useUsuariosData() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  // Perfis para o formulário. Se falharem, a lista de utilizadores aparece na mesma
+  const [perfis, setPerfis] = useState<PerfilResumo[]>([]);
   const { carregando, aAtualizar, erro, executar } = useCarregamento(
     i18n.t("comum.erros.carregarUtilizadores"),
   );
@@ -51,6 +57,9 @@ export function useUsuariosData() {
 
   useEffect(() => {
     carregarUsuarios();
+    fetchComToken(API_ENDPOINTS.PERFIS)
+      .then((data) => setPerfis(Array.isArray(data) ? data : []))
+      .catch(() => setPerfis([]));
   }, [carregarUsuarios]);
 
   // =========================================================
@@ -104,6 +113,7 @@ export function useUsuariosData() {
 
   return {
     usuarios,
+    perfis,
     carregando,
     aAtualizar,
     erro,

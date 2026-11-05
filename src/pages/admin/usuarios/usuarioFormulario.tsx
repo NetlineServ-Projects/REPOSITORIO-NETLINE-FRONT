@@ -8,12 +8,17 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faSave } from "@fortawesome/free-solid-svg-icons";
 import type { UsuarioFormData } from "../../../hooks/useUsuariosData";
+import type { PerfilResumo } from "../../../utils/permissoes";
 import SelectPesquisavel from "../../../components/selectPesquisavel";
 
 interface UsuarioFormularioProps {
   editandoId: number | null;
   formData: UsuarioFormData;
   onFormDataChange: (dados: UsuarioFormData) => void;
+  // Perfis que quem está a editar pode atribuir (o Administrador só aparece a administradores)
+  perfis: PerfilResumo[];
+  // A própria conta: o perfil não se pode mudar
+  perfilBloqueado?: boolean;
   salvando: boolean;
   erro: string | null;
   onVoltar: () => void;
@@ -24,6 +29,8 @@ export default function UsuarioFormulario({
   editandoId,
   formData,
   onFormDataChange,
+  perfis,
+  perfilBloqueado = false,
   salvando,
   erro,
   onVoltar,
@@ -187,18 +194,20 @@ export default function UsuarioFormulario({
             </label>
             <SelectPesquisavel
               id="usuario-perfil"
-              valor={formData.perfil}
+              valor={formData.perfilId === "" ? "" : String(formData.perfilId)}
               onChange={(v) =>
                 onFormDataChange({
                   ...formData,
-                  perfil: v as "ADMIN" | "FUNCIONARIO",
+                  perfilId: v ? Number(v) : "",
                 })
               }
-              opcoes={[
-                { valor: "FUNCIONARIO", label: t("admin.usuarios.funcionario") },
-                { valor: "ADMIN", label: t("admin.usuarios.administrador") },
-              ]}
+              opcoes={perfis.map((p) => ({ valor: String(p.id), label: p.nome }))}
+              placeholder={t("admin.usuarios.form.escolherPerfil")}
+              disabled={perfilBloqueado}
             />
+            {perfilBloqueado && (
+              <p className="text-xs text-slate-400 mt-1.5">{t("admin.usuarios.form.perfilProprio")}</p>
+            )}
           </div>
         </div>
 

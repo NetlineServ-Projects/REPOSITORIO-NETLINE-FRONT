@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchComToken } from "../utils/api";
 import i18n from "../lang/i18n";
 import { API_ENDPOINTS } from "../data/client/endpoint";
+import type { PerfilResumo } from "../utils/permissoes";
 
 export interface UsuarioData {
   id?: number;
   nome: string;
   email?: string;
-  perfil?: string;
+  perfil?: PerfilResumo | null;
+  permissoes?: string[];
   cargo?: string;
   departamento?: string;
   numero?: string;
@@ -27,7 +29,7 @@ export interface Documento {
 
 export interface Atividade {
   id: string;
-  usuario: { id: number; nome: string; perfil?: string };
+  usuario: { id: number; nome: string; perfil?: { id: number; nome: string } | null };
   acao: string;
   documento?: { id: string | number; titulo: string } | null;
   criadoEm: string;
@@ -44,7 +46,9 @@ const mensagem = (r: PromiseSettledResult<unknown>, padrao: string) =>
 const lista = <T,>(r: PromiseSettledResult<unknown>): T[] =>
   r.status === "fulfilled" && Array.isArray(r.value) ? (r.value as T[]) : [];
 
-export function useDashboardData(ehAdmin: boolean) {
+// verTodosEstados: quem aprova vê também os pendentes e rejeitados.
+// verPlataformas: sem acesso às plataformas não se pede a lista (a API responderia 403).
+export function useDashboardData({ verTodosEstados, verPlataformas }: { verTodosEstados: boolean; verPlataformas: boolean }) {
   const [carregando, setCarregando] = useState(true);
   const [documentos, setDocumentos] = useState<Secao<Documento[]>>({ dados: [], erro: null });
   const [totais, setTotais] = useState({ categorias: 0, sistemas: 0, plataformas: 0 });
@@ -55,7 +59,7 @@ export function useDashboardData(ehAdmin: boolean) {
       fetchComToken(API_ENDPOINTS.DOCUMENTOS),
       fetchComToken(API_ENDPOINTS.CATEGORIAS),
       fetchComToken(API_ENDPOINTS.SISTEMAS),
-      fetchComToken(API_ENDPOINTS.PLATAFORMAS),
+      verPlataformas ? fetchComToken(API_ENDPOINTS.PLATAFORMAS) : Promise.resolve([]),
       fetchComToken(API_ENDPOINTS.ATIVIDADES_RECENTES),
     ]);
 
@@ -67,14 +71,14 @@ export function useDashboardData(ehAdmin: boolean) {
     });
     setAtividades({ dados: lista<Atividade>(ativ), erro: mensagem(ativ, i18n.t("comum.erros.carregarAtividades")) });
     setCarregando(false);
-  }, []);
+  }, [verPlataformas]);
 
   useEffect(() => {
     buscarDados();
   }, [buscarDados]);
 
   const docs = documentos.dados;
-  const documentosVisiveis = ehAdmin ? docs : docs.filter((d) => d.estado === "APROVADO");
+  const documentosVisiveis = verTodosEstados ? docs : docs.filter((d) => d.estado === "APROVADO");
 
   return {
     carregando,

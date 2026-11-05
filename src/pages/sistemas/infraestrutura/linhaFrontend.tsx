@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next";
 
 interface LinhaFrontendProps {
   plataforma?: PlataformaResumo | null;
-  ehAdmin: boolean;
+  podeGerir: boolean;
 }
 
 // A plataforma do frontend é a mesma nos dois ambientes (define-se no formulário do sistema)
-export default function LinhaFrontend({ plataforma, ehAdmin }: LinhaFrontendProps) {
+export default function LinhaFrontend({ plataforma, podeGerir }: LinhaFrontendProps) {
   const { t } = useTranslation();
   return (
     <CartaoInfra
@@ -36,7 +36,7 @@ export default function LinhaFrontend({ plataforma, ehAdmin }: LinhaFrontendProp
       ) : (
         <p className="text-xs text-slate-400 italic">
           {t("sistemas.infraestrutura.frontend.semPlataforma")}
-          {ehAdmin ? t("sistemas.infraestrutura.frontend.definirAoEditar") : ""}
+          {podeGerir ? t("sistemas.infraestrutura.frontend.definirAoEditar") : ""}
         </p>
       )}
     </CartaoInfra>

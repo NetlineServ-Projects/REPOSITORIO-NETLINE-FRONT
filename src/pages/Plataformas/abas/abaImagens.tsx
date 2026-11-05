@@ -11,7 +11,7 @@ import {
 
 interface AbaImagensProps {
   imagens: ImagemContainer[];
-  ehAdmin: boolean;
+  podeGerir: boolean;
   aoEditar: AoEditarItem;
   aoEliminar: AoEliminarItem;
 }
@@ -51,7 +51,7 @@ function SeloEstado({ imagem }: { imagem: ImagemContainer }) {
 
 export default function AbaImagens({
   imagens,
-  ehAdmin,
+  podeGerir,
   aoEditar,
   aoEliminar,
 }: AbaImagensProps) {
@@ -62,7 +62,7 @@ export default function AbaImagens({
 
   // As mesmas ações na tabela e nos cartões do telemóvel
   const acoes = (imagem: ImagemContainer) =>
-    ehAdmin && (
+    podeGerir && (
       <AcoesItem
         tituloEditar={t("plataformas.abas.imagens.editar")}
         tituloEliminar={t("plataformas.abas.imagens.eliminar")}
@@ -95,7 +95,7 @@ export default function AbaImagens({
                 {" · "}{t("plataformas.abas.imagens.ultimoPush", { data: formatarData(imagem.ultimoPushEm) })}
               </p>
             </div>
-            {ehAdmin && <div className="shrink-0 -mr-1">{acoes(imagem)}</div>}
+            {podeGerir && <div className="shrink-0 -mr-1">{acoes(imagem)}</div>}
           </li>
         ))}
       </ul>
@@ -110,7 +110,7 @@ export default function AbaImagens({
               <th className="px-5 py-3.5">{t("plataformas.abas.imagens.colunas.porta")}</th>
               <th className="px-5 py-3.5">{t("plataformas.abas.imagens.colunas.ultimoPush")}</th>
               <th className="px-5 py-3.5">{t("plataformas.abas.imagens.colunas.estado")}</th>
-              {ehAdmin && <th className="px-5 py-3.5 text-right">{t("plataformas.abas.imagens.colunas.acoes")}</th>}
+              {podeGerir && <th className="px-5 py-3.5 text-right">{t("plataformas.abas.imagens.colunas.acoes")}</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-slate-700">
@@ -138,7 +138,7 @@ export default function AbaImagens({
                 <td className="px-5 py-3.5">
                   <SeloEstado imagem={imagem} />
                 </td>
-                {ehAdmin && (
+                {podeGerir && (
                   <td className="px-5 py-3.5 text-right">{acoes(imagem)}</td>
                 )}
               </tr>

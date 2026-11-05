@@ -33,13 +33,13 @@ type EstadoAba = "carregando" | "pronto" | "bloqueado" | "erro";
 
 interface InfraestruturaTabProps {
   sistema: Sistema;
-  ehAdmin: boolean;
+  podeGerir: boolean;
 }
 
 // Aba só de leitura. Escrever (infraestrutura e credenciais) faz-se em páginas próprias.
 export default function InfraestruturaTab({
   sistema,
-  ehAdmin,
+  podeGerir,
 }: InfraestruturaTabProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -167,13 +167,13 @@ export default function InfraestruturaTab({
       {/* ================= ESTRUTURA ================= */}
       <Secao titulo={t("sistemas.infraestrutura.estrutura", { ambiente: rotuloAmbiente(ambiente) })}>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-stretch">
-          <CartaoSubdominio ambiente={ambiente} subdominio={subdominio} ehAdmin={ehAdmin} />
+          <CartaoSubdominio ambiente={ambiente} subdominio={subdominio} podeGerir={podeGerir} />
 
           {estado === "pronto" ? (
             <CartaoBackend
               subtitulo={rotuloAmbiente(ambiente)}
               infraestrutura={infraestrutura}
-              ehAdmin={ehAdmin}
+              podeGerir={podeGerir}
               onEditar={() => navigate(caminhos.editar)}
             />
           ) : (
@@ -192,7 +192,7 @@ export default function InfraestruturaTab({
             </CartaoInfra>
           )}
 
-          <LinhaFrontend plataforma={sistema.plataformaFrontend} ehAdmin={ehAdmin} />
+          <LinhaFrontend plataforma={sistema.plataformaFrontend} podeGerir={podeGerir} />
         </div>
       </Secao>
 
@@ -206,7 +206,7 @@ export default function InfraestruturaTab({
         acao={
           estado === "pronto" &&
           infraestrutura &&
-          ehAdmin && (
+          podeGerir && (
             <button
               type="button"
               onClick={() => navigate(caminhos.novaCredencial)}
@@ -259,7 +259,7 @@ export default function InfraestruturaTab({
           (infraestrutura ? (
             <ListaCredenciais
               credenciais={credenciais}
-              ehAdmin={ehAdmin}
+              podeGerir={podeGerir}
               onEditar={(c) => navigate(caminhos.editarCredencial(c.id))}
               onApagar={handleApagarCredencial}
             />

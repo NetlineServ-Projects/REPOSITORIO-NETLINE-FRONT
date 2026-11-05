@@ -16,7 +16,7 @@ import type { Plataforma, Servidor } from "../../../types/plataforma";
 interface AbaServidoresProps {
   servidores: Servidor[];
   plataformas: Plataforma[];
-  ehAdmin: boolean;
+  podeGerir: boolean;
   aoEditar: AoEditarItem;
   aoEliminar: AoEliminarItem;
 }
@@ -26,7 +26,7 @@ interface AbaServidoresProps {
 export default function AbaServidores({
   servidores,
   plataformas,
-  ehAdmin,
+  podeGerir,
   aoEditar,
   aoEliminar,
 }: AbaServidoresProps) {
@@ -52,7 +52,7 @@ export default function AbaServidores({
         <AcoesItem
           tituloVer={t("plataformas.abas.servidores.verDetalhes", { nome: servidor.nome })}
           onVer={abrirDetalhes}
-          {...(ehAdmin && {
+          {...(podeGerir && {
             tituloEditar: t("plataformas.abas.servidores.editar", { nome: servidor.nome }),
             tituloEliminar: t("plataformas.abas.servidores.eliminar", { nome: servidor.nome }),
             onEditar: () => aoEditar("servidor", servidor),

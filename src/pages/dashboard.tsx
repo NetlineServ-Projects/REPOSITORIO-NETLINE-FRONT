@@ -24,7 +24,7 @@ export default function Dashboard() {
   const [modalApagarContaAberto, setModalApagarContaAberto] = useState(false);
 
   // Só o perfil: o menu e o cabeçalho aparecem logo, e cada página carrega os seus dados
-  const { usuario, ehAdmin, carregando, erro, recarregar } = useUsuarioAtual();
+  const { usuario, carregando, erro, recarregar } = useUsuarioAtual();
 
   // Redimensionamento do ecrã ajusta automaticamente a barra lateral
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function Dashboard() {
           ) : erro ? (
             <EstadoErro mensagem={erro} onTentarNovamente={recarregar} />
           ) : (
-            <Outlet context={{ usuario, ehAdmin, recarregarDashboard: recarregar }} />
+            <Outlet context={{ usuario, recarregarDashboard: recarregar }} />
           )}
         </main>
       </div>

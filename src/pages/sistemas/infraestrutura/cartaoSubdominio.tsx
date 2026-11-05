@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next";
 interface CartaoSubdominioProps {
   ambiente: TipoAmbiente;
   subdominio?: SubdominioDoSistema;
-  ehAdmin: boolean;
+  podeGerir: boolean;
 }
 
 // O subdomínio é do sistema (regista-se no formulário do sistema): aqui só se mostra
-export default function CartaoSubdominio({ ambiente, subdominio, ehAdmin }: CartaoSubdominioProps) {
+export default function CartaoSubdominio({ ambiente, subdominio, podeGerir }: CartaoSubdominioProps) {
   const { t } = useTranslation();
   return (
     <CartaoInfra
@@ -43,7 +43,7 @@ export default function CartaoSubdominio({ ambiente, subdominio, ehAdmin }: Cart
       ) : (
         <p className="text-xs text-slate-400 italic">
           {t("sistemas.infraestrutura.subdominio.semSubdominio")}
-          {ehAdmin ? t("sistemas.infraestrutura.subdominio.definirAoEditar") : ""}
+          {podeGerir ? t("sistemas.infraestrutura.subdominio.definirAoEditar") : ""}
         </p>
       )}
     </CartaoInfra>

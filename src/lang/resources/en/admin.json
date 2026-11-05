@@ -127,7 +127,10 @@
       "departamentoPlaceholder": "E.g.: IT",
       "perfil": "Profile / permission",
       "criarConta": "Create account",
-      "atualizarConta": "Update account"
+      "atualizarConta": "Update account",
+      "escolherPerfil": "Choose a profile",
+      "perfilProprio": "You cannot change the profile of your own account.",
+      "perfilObrigatorio": "Choose the user's profile."
     },
     "detalhes": {
       "carregando": "Loading user...",
@@ -149,6 +152,96 @@
       "telemovel": "Mobile",
       "cargo": "Job title",
       "departamento": "Department"
+    }
+  },
+  "perfis": {
+    "eyebrow": "SETTINGS",
+    "titulo": "Profiles and permissions",
+    "subtitulo": "Each user has one profile. The profile decides what the person sees and can do.",
+    "voltar": "Back to settings",
+    "novo": "New profile",
+    "carregando": "Loading profiles...",
+    "erroCarregar": "Could not load the profiles.",
+    "utilizadores_one": "{{count}} user",
+    "utilizadores_other": "{{count}} users",
+    "bloqueado": "Locked",
+    "administradorInfo": "The Administrator always has every permission, including managing profiles, assigning the Administrator profile and changing administrator accounts. It cannot be changed or deleted.",
+    "nome": "Profile name",
+    "nomePlaceholder": "E.g.: Developer",
+    "descricao": "Description",
+    "descricaoPlaceholder": "What this profile is for",
+    "permissoes": "Permissions",
+    "dependencia": "Automatically includes: {{nomes}}",
+    "guardar": "Save profile",
+    "aGuardar": "Saving...",
+    "criar": "Create profile",
+    "eliminar": "Delete profile",
+    "criado": "Profile \"{{nome}}\" created.",
+    "atualizado": "Profile \"{{nome}}\" updated. The changes apply right away to the users with this profile.",
+    "eliminado": "Profile \"{{nome}}\" deleted.",
+    "emUso": "To delete this profile, first change the profile of the users who have it.",
+    "semAlteracoes": "No changes to save.",
+    "modalEliminar": {
+      "titulo": "Delete profile",
+      "mensagem": "Are you sure you want to delete the profile <destaque>{{nome}}</destaque>?",
+      "confirmar": "Delete",
+      "aEliminar": "Deleting..."
+    },
+    "grupos": {
+      "documentos": "Documents",
+      "sistemas": "Systems",
+      "plataformas": "Platforms",
+      "administracao": "Administration"
+    },
+    "itens": {
+      "documentos.aprovar": {
+        "nome": "Approve documents",
+        "descricao": "Approve and reject documents, see everyone's pending ones and publish without approval."
+      },
+      "documentos.eliminar": {
+        "nome": "Delete documents",
+        "descricao": "Move documents to the recycle bin."
+      },
+      "documentos.sensiveis": {
+        "nome": "Sensitive categories",
+        "descricao": "See documents in sensitive categories (HR, Finance, Contracts...)."
+      },
+      "documentos.lixeira": {
+        "nome": "Recycle bin",
+        "descricao": "See the recycle bin, restore and permanently delete documents."
+      },
+      "sistemas.criar": {
+        "nome": "Create systems",
+        "descricao": "Register systems and edit the ones the person created."
+      },
+      "sistemas.gerir": {
+        "nome": "Manage all systems",
+        "descricao": "Edit and delete any system."
+      },
+      "sistemas.infraestrutura.ver": {
+        "nome": "See infrastructure and credentials",
+        "descricao": "See the systems' Infrastructure tab and reveal credentials."
+      },
+      "sistemas.infraestrutura.gerir": {
+        "nome": "Edit infrastructure and credentials",
+        "descricao": "Create and edit the systems' infrastructure and credentials."
+      },
+      "infraestrutura.ver": {
+        "nome": "See platforms",
+        "descricao": "See platforms, servers, images and domains."
+      },
+      "infraestrutura.gerir": {
+        "nome": "Manage platforms",
+        "descricao": "Create, edit and delete platforms, servers, images and domains."
+      },
+      "atividade.ver": {
+        "nome": "Everyone's activity",
+        "descricao": "See every user's activity (without it, only their own)."
+      },
+      "utilizadores.gerir": {
+        "nome": "Manage users",
+        "descricao": "Create and edit accounts and assign profiles (never Administrator)."
+      }
     }
   }
 }

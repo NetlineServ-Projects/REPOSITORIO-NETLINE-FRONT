@@ -33,7 +33,10 @@
     "salvoComSucesso": "Configurações guardadas com sucesso!",
     "erroCarregar": "Não foi possível carregar as configurações.",
     "erroSalvar": "Não foi possível guardar as configurações.",
-    "carregando": "A carregar configurações..."
+    "carregando": "A carregar configurações...",
+    "perfisTitulo": "Perfis e permissões",
+    "perfisDescricao": "Defina o que cada perfil pode ver e fazer na plataforma.",
+    "perfisAbrir": "Gerir perfis"
   },
 
   "documentos": {

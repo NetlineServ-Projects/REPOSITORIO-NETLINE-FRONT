@@ -23,9 +23,10 @@ import { useAcessoInfraestruturaOpcional } from "./infraestrutura/acessoInfraest
 import { rotuloStatus } from "../../utils/status";
 import { useConfirmacao } from "../../components/confirmacao";
 import { EstadoCarregando, EstadoErro, IndicadorAtualizar } from "../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { id?: number; nome: string; perfil?: string } | null;
+  usuario: { id?: number; nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 type Aba = "geral" | "documentos" | "infraestrutura";
@@ -36,7 +37,10 @@ export default function SistemasPage() {
   const confirmar = useConfirmacao();
   const { id } = useParams<{ id?: string }>();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const publicaDireto = pode(usuario, PERMISSOES.DOCUMENTOS_APROVAR);
+  const podeApagarDocumentos = pode(usuario, PERMISSOES.DOCUMENTOS_ELIMINAR);
+  const verInfraestrutura = pode(usuario, PERMISSOES.SISTEMAS_INFRA_VER);
+  const podeGerirInfra = pode(usuario, PERMISSOES.SISTEMAS_INFRA_GERIR);
 
   // Só existe na página de um sistema (não na lista)
   const acesso = useAcessoInfraestruturaOpcional();
@@ -67,8 +71,9 @@ export default function SistemasPage() {
   // A aba ativa vive no endereço: ?aba=documentos | ?aba=infraestrutura
   const [searchParams, setSearchParams] = useSearchParams();
   const parametroAba = searchParams.get("aba");
+  // Sem acesso à infraestrutura dos sistemas, a aba não existe (nem pelo endereço)
   const abaAtiva: Aba =
-    parametroAba === "documentos" || parametroAba === "infraestrutura"
+    parametroAba === "documentos" || (parametroAba === "infraestrutura" && verInfraestrutura)
       ? parametroAba
       : "geral";
 
@@ -184,9 +189,9 @@ export default function SistemasPage() {
       formData.append("descricao", dados.descricao);
 
       await anexarDocumento(formData);
-      // Segue o mesmo fluxo da aba Documentos: só os ADMIN publicam de imediato
+      // Segue o mesmo fluxo da aba Documentos: só quem aprova publica de imediato
       toast.success(
-        ehAdmin
+        publicaDireto
           ? t("sistemas.detalhe.documentoPublicado")
           : t("sistemas.detalhe.documentoEnviadoAprovacao"),
       );
@@ -338,6 +343,7 @@ export default function SistemasPage() {
         salvando={salvando}
         onCancelar={() => setFormularioAberto(null)}
         onSubmit={handleSalvarSistema}
+        gerirAlojamento={podeGerirInfra}
       />
     );
   }
@@ -348,7 +354,7 @@ export default function SistemasPage() {
       <div className="space-y-6">
         <SistemasHeader
           total={sistemas.length}
-          onNovoSistema={() => setFormularioAberto("novo")}
+          onNovoSistema={pode(usuario, PERMISSOES.SISTEMAS_CRIAR) ? () => setFormularioAberto("novo") : undefined}
         />
 
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-xs space-y-4">
@@ -455,6 +461,7 @@ export default function SistemasPage() {
             {documentosDoSistema.length}
           </span>
         </button>
+        {verInfraestrutura && (
         <button
           onClick={() => mudarAba("infraestrutura")}
           aria-current={abaAtiva === "infraestrutura" ? "page" : undefined}
@@ -466,6 +473,7 @@ export default function SistemasPage() {
         >
           {t("sistemas.detalhe.abas.infraestrutura")}
         </button>
+        )}
       </div>
 
       {/* Conteúdo Alternável pelas Tabs */}
@@ -486,11 +494,11 @@ export default function SistemasPage() {
             onBuscaChange={setBuscaDoc}
             onEditar={abrirEditarDocumento}
             onApagar={handleApagarDoc}
-            ehAdmin={ehAdmin}
+            podeApagar={podeApagarDocumentos}
           />
         </div>
       ) : (
-        <InfraestruturaTab sistema={sistemaAtivo} ehAdmin={ehAdmin} />
+        <InfraestruturaTab sistema={sistemaAtivo} podeGerir={podeGerirInfra} />
       )}
     </div>
   );

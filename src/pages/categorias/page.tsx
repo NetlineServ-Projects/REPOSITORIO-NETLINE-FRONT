@@ -14,9 +14,10 @@ import { classificarTipo, OPCOES_TIPO } from "../../utils/tipoDocumento";
 import type { Categoria } from "../../types/documento";
 import { toast } from "sonner";
 import { EstadoCarregando, EstadoErro, EstadoVazio, IndicadorAtualizar } from "../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { nome: string; perfil?: string } | null;
+  usuario: { nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 export default function CategoriasPage() {
@@ -24,7 +25,7 @@ export default function CategoriasPage() {
   const navigate = useNavigate();
   const { documentos, categorias, loading, aAtualizar, erro, recarregar, apagarDocumento } = useDocumentosData();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const podeGerirDocumentos = pode(usuario, PERMISSOES.DOCUMENTOS_APROVAR);
 
   const MESES = useMemo(
     () => Array.from({ length: 12 }, (_, i) => ({ valor: String(i), label: t(`comum.meses.${i}`) })),
@@ -229,7 +230,7 @@ export default function CategoriasPage() {
             {t("categorias.contagemNestaCategoria", { count: documentosDaCategoria.length })}
           </p>
         </div>
-        {ehAdmin && (
+        {podeGerirDocumentos && (
           <button
             onClick={abrirCriar}
             className="w-full sm:w-auto text-center px-4 py-2.5 bg-white text-netline-azul text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors sm:self-start md:self-auto"
@@ -336,7 +337,7 @@ export default function CategoriasPage() {
                           >
                             <IconVer />
                           </Link>
-                          {ehAdmin && (
+                          {podeGerirDocumentos && (
                             <>
                               <Link
                                 to={`/dashboard/documentos/${doc.id}/editar`}
@@ -383,7 +384,7 @@ export default function CategoriasPage() {
                   >
                     <IconVer />
                   </Link>
-                  {ehAdmin && (
+                  {podeGerirDocumentos && (
                     <>
                       <Link
                         to={`/dashboard/documentos/${doc.id}/editar`}

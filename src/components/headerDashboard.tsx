@@ -9,7 +9,7 @@ import { useUsuario } from "./usuarioContext";
 interface HeaderDashboardProps {
   sidebarFechada: boolean;
   setSidebarFechada: (fechada: boolean) => void;
-  usuario?: { nome: string; email?: string; perfil?: string; fotografia?: string | null } | null;
+  usuario?: { nome: string; email?: string; perfil?: { nome: string } | null; fotografia?: string | null } | null;
   onDeletarConta?: () => void;
 }
 
@@ -82,7 +82,7 @@ export default function HeaderDashboard({
                     <p className="text-xs text-slate-400 truncate">{usuario.email}</p>
                   )}
                   <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                    {usuario?.perfil === "ADMIN" ? t("componentes.header.perfilAdmin") : t("componentes.header.utilizador")}
+                    {usuario?.perfil?.nome ?? t("componentes.header.utilizador")}
                   </span>
                 </div>
               </div>

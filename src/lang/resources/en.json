@@ -33,7 +33,10 @@
     "salvoComSucesso": "Settings saved successfully!",
     "erroCarregar": "Could not load settings.",
     "erroSalvar": "Could not save settings.",
-    "carregando": "Loading settings..."
+    "carregando": "Loading settings...",
+    "perfisTitulo": "Profiles and permissions",
+    "perfisDescricao": "Define what each profile can see and do on the platform.",
+    "perfisAbrir": "Manage profiles"
   },
 
   "documentos": {

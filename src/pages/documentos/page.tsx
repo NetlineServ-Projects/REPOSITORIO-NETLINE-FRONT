@@ -13,16 +13,17 @@ import { IconVer } from "../../components/icons";
 import { classificarTipo, OPCOES_TIPO } from "../../utils/tipoDocumento";
 import { toast } from "sonner";
 import { EstadoCarregando, EstadoErro, EstadoVazio, IndicadorAtualizar } from "../../components/estados";
+import { PERMISSOES, pode, type PerfilResumo } from "../../utils/permissoes";
 
 interface DashboardContext {
-  usuario: { nome: string; perfil?: string } | null;
+  usuario: { nome: string; perfil?: PerfilResumo | null; permissoes?: string[] } | null;
 }
 
 export default function DocumentosPage() {
   const { t } = useTranslation();
   const { documentos, categorias, loading, aAtualizar, erro, recarregar, apagarDocumento } = useDocumentosData();
   const { usuario } = useOutletContext<DashboardContext>();
-  const ehAdmin = usuario?.perfil === "ADMIN";
+  const podeGerirDocumentos = pode(usuario, PERMISSOES.DOCUMENTOS_APROVAR);
 
   const MESES = useMemo(
     () => Array.from({ length: 12 }, (_, i) => ({ valor: String(i), label: t(`comum.meses.${i}`) })),
@@ -264,7 +265,7 @@ export default function DocumentosPage() {
                           >
                             <IconVer />
                           </Link>
-                          {ehAdmin && (
+                          {podeGerirDocumentos && (
                             <>
                               <Link
                                 to={`/dashboard/documentos/${doc.id}/editar`}
@@ -311,7 +312,7 @@ export default function DocumentosPage() {
                   >
                     <IconVer />
                   </Link>
-                  {ehAdmin && (
+                  {podeGerirDocumentos && (
                     <>
                       <Link
                         to={`/dashboard/documentos/${doc.id}/editar`}

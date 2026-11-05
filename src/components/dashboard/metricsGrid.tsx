@@ -16,8 +16,16 @@ interface metricsGridProps {
   totalSistemas: number | null;
   totalPlataformas?: number | null;
   totalCategorias: number | null;
-  ehAdmin?: boolean;
+  mostrarPendentes?: boolean;
+  mostrarPlataformas?: boolean;
 }
+
+// Classes completas (o Tailwind só gera as que aparecem escritas no código)
+const COLUNAS_XL: Record<number, string> = {
+  4: "xl:grid-cols-4",
+  5: "xl:grid-cols-5",
+  6: "xl:grid-cols-6",
+};
 
 export default function MetricsGrid({
   totalDocumentos,
@@ -26,15 +34,13 @@ export default function MetricsGrid({
   totalSistemas,
   totalPlataformas = 0,
   totalCategorias,
-  ehAdmin = false,
+  mostrarPendentes = false,
+  mostrarPlataformas = false,
 }: metricsGridProps) {
   const { t } = useTranslation();
+  const colunas = 4 + Number(mostrarPendentes) + Number(mostrarPlataformas);
   return (
-    <div
-      className={`grid grid-cols-2 lg:grid-cols-3 ${
-        ehAdmin ? "xl:grid-cols-6" : "xl:grid-cols-5"
-      } gap-3 sm:gap-6`}
-    >
+    <div className={`grid grid-cols-2 lg:grid-cols-3 ${COLUNAS_XL[colunas]} gap-3 sm:gap-6`}>
       <MetricCard
         titulo={t("dashboard.metricas.totalDocumentos")}
         valor={totalDocumentos}
@@ -42,7 +48,7 @@ export default function MetricsGrid({
         corBorda="border-t-blue-500"
         corIcone="text-blue-600"
       />
-      {ehAdmin && (
+      {mostrarPendentes && (
         <MetricCard
           titulo={t("dashboard.metricas.pendentesAprovacao")}
           valor={pendentesAprovacao ?? 0}
@@ -65,13 +71,15 @@ export default function MetricsGrid({
         corBorda="border-t-indigo-600"
         corIcone="text-blue-900"
       />
-      <MetricCard
-        titulo={t("dashboard.metricas.plataformas")}
-        valor={totalPlataformas}
-        icone={<IconPlataforma className="w-6 h-6" />}
-        corBorda="border-t-purple-600"
-        corIcone="text-purple-700"
-      />
+      {mostrarPlataformas && (
+        <MetricCard
+          titulo={t("dashboard.metricas.plataformas")}
+          valor={totalPlataformas}
+          icone={<IconPlataforma className="w-6 h-6" />}
+          corBorda="border-t-purple-600"
+          corIcone="text-purple-700"
+        />
+      )}
       <MetricCard
         titulo={t("dashboard.metricas.categorias")}
         valor={totalCategorias}

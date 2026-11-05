@@ -52,7 +52,12 @@ export default function Autenticacao() {
       // O token fica no cookie; localmente só o que o ecrã precisa
       guardarUsuarioLocal(user);
       aplicarTema(Boolean(user.temaEscuro));
-      fazerLogin({ name: user.name || user.nome, perfil: user.perfil });
+      fazerLogin({
+        id: user.id,
+        name: user.name || user.nome,
+        perfil: user.perfil ?? null,
+        permissoes: user.permissoes ?? [],
+      });
 
       window.location.href = "/dashboard";
     } catch (err: any) {

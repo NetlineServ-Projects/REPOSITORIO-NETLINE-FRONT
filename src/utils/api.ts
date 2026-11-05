@@ -28,17 +28,29 @@ export class ErroApi extends Error {
 }
 
 // A sessão vive num cookie HttpOnly posto pelo backend no login: o JavaScript não o lê nem o
-// guarda. Aqui só se guarda o essencial para o ecrã (id, nome, perfil) em "usuario_logado".
+// guarda. Aqui só se guarda o essencial para o ecrã (id, nome, perfil e permissões) em
+// "usuario_logado". As permissões servem só para mostrar ou esconder: a API verifica tudo.
 const CHAVE_USUARIO = "usuario_logado";
 
 export function temSessaoLocal(): boolean {
   return Boolean(localStorage.getItem(CHAVE_USUARIO));
 }
 
-export function guardarUsuarioLocal(usuario: { id: number; nome?: string; name?: string; perfil: string }) {
+export function guardarUsuarioLocal(usuario: {
+  id: number;
+  nome?: string;
+  name?: string;
+  perfil: unknown;
+  permissoes?: string[];
+}) {
   localStorage.setItem(
     CHAVE_USUARIO,
-    JSON.stringify({ id: usuario.id, nome: usuario.nome ?? usuario.name, perfil: usuario.perfil }),
+    JSON.stringify({
+      id: usuario.id,
+      nome: usuario.nome ?? usuario.name,
+      perfil: usuario.perfil,
+      permissoes: usuario.permissoes ?? [],
+    }),
   );
 }
 
