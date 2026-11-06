@@ -3,19 +3,21 @@ import { useCarregamento } from "./useCarregamento";
 import { toast } from "sonner";
 import { fetchComToken } from "../utils/api";
 import { API_ENDPOINTS } from "../data/client/endpoint";
-import type { Plataforma, Servidor, Dominio, Subdominio,ImagemContainer, DadosPlataforma, CatalogoFornecedores} from "../types/plataforma";
+import type { Plataforma, Servidor, Dominio, Subdominio,ImagemContainer, DadosPlataforma, DadosDominio, CatalogoFornecedores} from "../types/plataforma";
 import type { PlataformaArvore } from "../types/plataformaArvore";
 
 // Fornecedores de cada tipo de plataforma (a fonte é o backend)
 export const listarFornecedores = (): Promise<CatalogoFornecedores> =>
   fetchComToken(API_ENDPOINTS.PLATAFORMA_FORNECEDORES);
 
+// Token de uma conta de acesso da plataforma.
 // Só deve ser chamada com o token elevado (ver useAcessoElevado)
 export const revelarTokenPlataforma = async (
   id: number | string,
+  acessoId: number | string,
   tokenElevado: string,
 ): Promise<string> => {
-  const resposta = await fetchComToken(API_ENDPOINTS.PLATAFORMA_TOKEN(id), {
+  const resposta = await fetchComToken(API_ENDPOINTS.PLATAFORMA_TOKEN(id, acessoId), {
     headers: { "x-token-elevado": tokenElevado },
   });
   return (resposta as { token?: string })?.token ?? "";
@@ -164,11 +166,7 @@ export function usePlataformasData() {
   // ==========================================
   // OPERAÇÕES: DOMÍNIO
   // ==========================================
-  const criarDominio = async (dados: {
-    nome: string;
-    dataExpiracao: string;
-    plataformaId: number;
-  }) => {
+  const criarDominio = async (dados: DadosDominio) => {
     await fetchComToken(API_ENDPOINTS.DOMINIOS, {
       method: "POST",
       body: JSON.stringify(dados),
@@ -178,11 +176,7 @@ export function usePlataformasData() {
 
   const atualizarDominio = async (
     id: number | string,
-    dados: Partial<{
-      nome: string;
-      dataExpiracao: string;
-      plataformaId: number;
-    }>
+    dados: Partial<DadosDominio>
   ) => {
     await fetchComToken(API_ENDPOINTS.DOMINIO_BY_ID(id), {
       method: "PATCH",

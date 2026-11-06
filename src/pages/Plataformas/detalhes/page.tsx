@@ -1,14 +1,15 @@
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Secao, Campo } from "../../../components/secaoDetalhe";
+import ContaDominios from "./contaDominios";
 import CartaoIndicador, { type CartaoIndicadorProps } from "../../../components/plataformas/cartaoIndicador";
 import BotaoIconeCabecalho from "../../../components/plataformas/botaoIconeCabecalho";
-import AbaDominios from "../abas/abaDominios";
 import AbaImagens from "../abas/abaImagens";
-import SegredoRevelavel from "../../../components/segredoRevelavel";
+import CartaoContaAcesso from "../../../components/plataformas/cartaoContaAcesso";
 import LogotipoPlataforma from "../../../components/plataformas/logotipoPlataforma";
 import CartaoServidor from "../../../components/plataformas/cartaoServidor";
 import CartaoSistemaHospedado from "../../../components/plataformas/cartaoSistemaHospedado";
-import { revelarTokenPlataforma } from "../../../hooks/usePlataformasData";
 import {
   IconLinkExterno,
   IconCaneta,
@@ -19,6 +20,7 @@ import {
   IconRede,
   IconSistemas,
   IconEstado,
+  IconSetaDireita,
 } from "../../../components/icons";
 import { ROTULOS_TIPO_PLATAFORMA, localeDatas } from "../../../types/plataformaConstantes";
 import type {
@@ -85,6 +87,45 @@ export default function DetalhesPlataforma({
   // Registos antigos: servidores criados em containerização antes da regra existir
   const servidoresForaDoLugar = ehContainerizacao ? servidoresDaPlataforma : [];
   const sistemasHospedados = plataforma.sistemasHospedados ?? [];
+  const acessos = plataforma.acessos ?? [];
+
+  // Gestão de domínio: os domínios veem-se por conta (instituição), numa mini página
+  // aberta pelo URL (?conta=ID, ou ?conta=sem para os domínios ainda sem conta)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const contaDoUrl = searchParams.get("conta");
+  const idsContas = new Set(acessos.map((a) => a.id));
+  const dominiosDaConta = (contaId: number) => dominiosDaPlataforma.filter((d) => d.acessoId === contaId);
+  // Sem conta, ou com uma conta que já não existe nesta plataforma
+  const dominiosSemConta = dominiosDaPlataforma.filter((d) => d.acessoId == null || !idsContas.has(d.acessoId));
+
+  const abrirConta = (conta: number | "sem") =>
+    setSearchParams({ plataforma: String(plataforma.id), conta: String(conta) });
+  const fecharConta = () => setSearchParams({ plataforma: String(plataforma.id) }, { replace: true });
+
+  // Ao entrar ou sair da página de uma conta, começa no topo
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [contaDoUrl]);
+
+  if (ehGestaoDominio && contaDoUrl) {
+    const conta = contaDoUrl === "sem" ? null : acessos.find((a) => String(a.id) === contaDoUrl);
+    // Conta que não existe (ex: apagada entretanto): volta à plataforma
+    if (conta !== undefined) {
+      return (
+        <ContaDominios
+          plataforma={plataforma}
+          conta={conta}
+          dominios={conta ? dominiosDaConta(conta.id) : dominiosSemConta}
+          subdominios={subdominios}
+          servidores={servidores}
+          podeGerir={podeGerir}
+          aoVoltar={fecharConta}
+          aoEditar={aoEditar}
+          aoEliminar={aoEliminar}
+        />
+      );
+    }
+  }
 
   const indicadores: CartaoIndicadorProps[] = [
     ...(ehGestaoDominio
@@ -189,23 +230,6 @@ export default function DetalhesPlataforma({
               <span className="text-slate-400 font-normal">{t("plataformas.detalhe.semUrlPainel")}</span>
             )}
           </Campo>
-          <Campo rotulo={t("plataformas.detalhe.utilizador")}>
-            {plataforma.utilizador ? (
-              <span className="font-mono">{plataforma.utilizador}</span>
-            ) : (
-              <span className="text-slate-400 font-normal">{t("plataformas.detalhe.naoDefinido")}</span>
-            )}
-          </Campo>
-          <Campo rotulo={t("plataformas.detalhe.token")}>
-            {plataforma.temToken ? (
-              <SegredoRevelavel
-                descricao={t("plataformas.detalhe.tokenDescricao", { nome: plataforma.nome })}
-                obter={(tokenElevado) => revelarTokenPlataforma(plataforma.id, tokenElevado)}
-              />
-            ) : (
-              <span className="text-slate-400 font-normal">{t("plataformas.detalhe.naoDefinido")}</span>
-            )}
-          </Campo>
           {ehContainerizacao && (
             <>
               <Campo rotulo={t("plataformas.detalhe.urlRegistry")}>
@@ -218,6 +242,52 @@ export default function DetalhesPlataforma({
           )}
           <Campo rotulo={t("plataformas.detalhe.registadaEm")}>{formatarData(plataforma.criadoEm)}</Campo>
         </dl>
+      </Secao>
+
+      {/* ================= CONTAS DE ACESSO ================= */}
+      <Secao titulo={t("plataformas.detalhe.contasAcesso")}>
+        {acessos.length === 0 && !(ehGestaoDominio && dominiosSemConta.length > 0) ? (
+          <div className="bg-white rounded-2xl border border-slate-200/70 shadow-xs p-5">
+            <p className="text-sm text-slate-400">{t("plataformas.detalhe.semContas")}</p>
+          </div>
+        ) : (
+          <>
+            {ehGestaoDominio && (
+              <p className="text-xs text-slate-500 px-1">{t("plataformas.detalhe.cliqueContaDominios")}</p>
+            )}
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))] gap-4">
+              {acessos.map((acesso) => (
+                <CartaoContaAcesso
+                  key={acesso.id}
+                  conta={acesso}
+                  plataformaId={plataforma.id}
+                  nomePlataforma={plataforma.nome}
+                  // Numa plataforma de domínios, o cartão abre a página com os domínios da conta
+                  onAbrir={ehGestaoDominio ? () => abrirConta(acesso.id) : undefined}
+                  totalDominios={dominiosDaConta(acesso.id).length}
+                />
+              ))}
+
+              {/* Domínios ainda sem conta: ficam acessíveis num cartão à parte */}
+              {ehGestaoDominio && dominiosSemConta.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => abrirConta("sem")}
+                  className="text-left bg-white rounded-2xl border border-dashed border-slate-300 p-5 flex flex-col justify-between gap-4 cursor-pointer transition-all hover:border-blue-200 hover:shadow-md"
+                >
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-bold text-slate-600">{t("plataformas.detalhe.semConta")}</h4>
+                    <p className="text-xs text-slate-400">{t("plataformas.detalhe.semContaAjuda")}</p>
+                  </div>
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-blue-900">
+                    <span>{t("plataformas.detalhe.verDominios", { count: dominiosSemConta.length })}</span>
+                    <IconSetaDireita className="w-3.5 h-3.5" />
+                  </div>
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </Secao>
 
       {/* ================= SERVIDORES (só se existirem) ================= */}
@@ -284,19 +354,8 @@ export default function DetalhesPlataforma({
         </Secao>
       )}
 
-      {/* ================= DOMÍNIOS (só gestão de domínio) ================= */}
-      {ehGestaoDominio && (
-        <Secao titulo={t("plataformas.detalhe.dominiosDns")}>
-          <AbaDominios
-            dominios={dominiosDaPlataforma}
-            subdominios={subdominios}
-            servidores={servidores}
-            podeGerir={podeGerir}
-            aoEditar={aoEditar}
-            aoEliminar={aoEliminar}
-          />
-        </Secao>
-      )}
+      {/* Os domínios (gestão de domínio) não se listam aqui todos juntos: veem-se por
+          conta, ao clicar no cartão de cada conta (ver ContaDominios) */}
     </div>
   );
 }

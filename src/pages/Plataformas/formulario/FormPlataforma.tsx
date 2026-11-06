@@ -8,12 +8,9 @@ import type {
   TipoPlataforma,
 } from "../../../types/plataforma";
 import { API_URL } from "../../../utils/api";
-import SegredoRevelavel from "../../../components/segredoRevelavel";
-import {
-  listarFornecedores,
-  revelarTokenPlataforma,
-} from "../../../hooks/usePlataformasData";
-import { IconOlhoAberto, IconOlhoFechado } from "../../../components/icons";
+import { listarFornecedores } from "../../../hooks/usePlataformasData";
+import ContasAcesso from "./ContasAcesso";
+import { linhasIniciais, linhasParaDados, type LinhaAcesso } from "./linhasAcesso";
 import SelectPesquisavel from "../../../components/selectPesquisavel";
 import i18n from "../../../lang/i18n";
 
@@ -57,10 +54,8 @@ export default function FormPlataforma({
   const [urlPainel, setUrlPainel] = useState(plataformaExistente?.urlPainel ?? "");
   const [ativo, setAtivo] = useState(plataformaExistente?.ativo ?? true);
 
-  // Credenciais de acesso (todos os tipos)
-  const [utilizador, setUtilizador] = useState(plataformaExistente?.utilizador ?? "");
-  const [token, setToken] = useState("");
-  const [mostrarToken, setMostrarToken] = useState(false);
+  // Contas de acesso (todos os tipos): uma ou mais, ex: a da Netline e a de um cliente
+  const [contas, setContas] = useState<LinhaAcesso[]>(() => linhasIniciais(plataformaExistente?.acessos));
 
   // Registry (só containerização)
   const [registryUrl, setRegistryUrl] = useState(plataformaExistente?.registryUrl ?? "");
@@ -165,18 +160,22 @@ export default function FormPlataforma({
       }
     }
 
+    // Lista completa das contas (as removidas no formulário são apagadas no backend)
+    const acessos = linhasParaDados(contas);
+    if (!acessos) {
+      toast.error(t("plataformas.form.plataforma.contaIncompleta"));
+      return;
+    }
+
     const dados: DadosPlataforma = {
       tipo,
       fornecedor,
       urlPainel: urlPainel.trim() || null,
       ativo,
-      utilizador: utilizador.trim() || null,
+      acessos,
     };
 
     if (ehOutro) dados.nome = nome.trim();
-
-    // Em branco = manter o token atual
-    if (token) dados.token = token;
 
     // Nos outros tipos estes campos nem são enviados (o backend recusa-os)
     if (ehContainerizacao) {
@@ -276,67 +275,14 @@ export default function FormPlataforma({
           />
         </div>
 
-        {/* Credenciais de acesso (todos os tipos) */}
-        <div className="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-4">
-          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-            {t("plataformas.form.plataforma.credenciais")}
-          </span>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                {t("plataformas.form.plataforma.utilizador")}
-              </label>
-              <input
-                type="text"
-                placeholder={t("plataformas.form.plataforma.utilizadorPlaceholder")}
-                value={utilizador}
-                onChange={(e) => setUtilizador(e.target.value)}
-                autoComplete="off"
-                className={`${CLASSE_CAMPO} bg-white`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                {t("plataformas.form.plataforma.token")}
-              </label>
-              <div className="relative">
-                <input
-                  type={mostrarToken ? "text" : "password"}
-                  placeholder={
-                    plataformaExistente?.temToken
-                      ? t("plataformas.form.plataforma.tokenManter")
-                      : t("plataformas.form.plataforma.tokenPlaceholder")
-                  }
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
-                  autoComplete="new-password"
-                  className={`${CLASSE_CAMPO} bg-white pr-10`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setMostrarToken(!mostrarToken)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                >
-                  {mostrarToken ? <IconOlhoFechado /> : <IconOlhoAberto />}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {plataformaExistente?.temToken && (
-            <div className="space-y-1 bg-white border border-slate-200 rounded-lg p-2.5">
-              <p className="text-[11px] font-semibold text-slate-500">{t("plataformas.form.plataforma.tokenGuardado")}</p>
-              <SegredoRevelavel
-                descricao={t("plataformas.form.plataforma.tokenDescricao", { nome: plataformaExistente.nome })}
-                obter={(tokenElevado) =>
-                  revelarTokenPlataforma(plataformaExistente.id, tokenElevado)
-                }
-              />
-            </div>
-          )}
-        </div>
+        {/* Contas de acesso (todos os tipos) */}
+        <ContasAcesso
+          linhas={contas}
+          onChange={setContas}
+          plataformaId={plataformaExistente?.id}
+          nomePlataforma={plataformaExistente?.nome}
+          classeCampo={`${CLASSE_CAMPO} bg-white`}
+        />
 
         {/* Registry (só containerização) */}
         {ehContainerizacao && (

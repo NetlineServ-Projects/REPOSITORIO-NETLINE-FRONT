@@ -13,6 +13,7 @@ import { localeDatas } from "../../../types/plataformaConstantes";
 import { ROTULO_AMBIENTE } from "../../../utils/servidor";
 import { usePaginacao } from "../../../hooks/usePaginacao";
 import Paginacao from "../../../components/paginacao";
+import { IconPlataforma, IconEmpresa } from "../../../components/icons";
 
 interface AbaDominiosProps {
   dominios: Dominio[];
@@ -21,6 +22,10 @@ interface AbaDominiosProps {
   podeGerir: boolean;
   aoEditar: AoEditarItem;
   aoEliminar: AoEliminarItem;
+  // Etiqueta com a plataforma de cada domínio; desligada nos detalhes de uma plataforma (seria sempre a mesma)
+  mostrarPlataforma?: boolean;
+  // Etiqueta com a conta (instituição); desligada na página de uma conta (seria sempre a mesma)
+  mostrarConta?: boolean;
 }
 
 // A partir de quantos dias o domínio passa a "a expirar" (igual ao aviso das notificações)
@@ -87,6 +92,8 @@ export default function AbaDominios({
   podeGerir,
   aoEditar,
   aoEliminar,
+  mostrarPlataforma = true,
+  mostrarConta = true,
 }: AbaDominiosProps) {
   const { t } = useTranslation();
   // Mostra 10 de cada vez
@@ -127,6 +134,29 @@ export default function AbaDominios({
                         {selo && (
                           <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg border ${selo.classe}`}>
                             {selo.texto}
+                          </span>
+                        )}
+                        {/* Plataforma de gestão de domínio onde o domínio está registado, com ligação para ela */}
+                        {mostrarPlataforma && dominio.plataforma && (
+                          <Link
+                            to={`/dashboard/plataformas?plataforma=${dominio.plataforma.id}`}
+                            title={t("plataformas.abas.dominios.verPlataforma", { nome: dominio.plataforma.nome })}
+                            className="inline-flex items-center gap-1 max-w-full px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-[11px] font-semibold text-blue-900 hover:bg-blue-100 transition-colors"
+                          >
+                            <IconPlataforma className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{dominio.plataforma.nome}</span>
+                          </Link>
+                        )}
+                        {/* Conta / instituição da plataforma onde o domínio está registado */}
+                        {mostrarConta && dominio.acesso && (
+                          <span
+                            title={t("plataformas.abas.dominios.contaTitulo")}
+                            className="inline-flex items-center gap-1 max-w-full px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700"
+                          >
+                            <IconEmpresa className="w-3 h-3 shrink-0 text-slate-500" />
+                            <span className="truncate">
+                              {dominio.acesso.descricao || dominio.acesso.utilizador}
+                            </span>
                           </span>
                         )}
                       </div>

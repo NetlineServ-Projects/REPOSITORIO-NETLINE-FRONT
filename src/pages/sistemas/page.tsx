@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { toast } from "sonner";
 import { Trans, useTranslation } from "react-i18next";
-import { useSistemasData, podeGerirSistema, type Sistema } from "../../hooks/useSistemasData";
+import { useSistemasData, podeEditarSistema, podeEliminarSistema, type Sistema } from "../../hooks/useSistemasData";
 import type { Documento } from "../../types/documento";
 import SistemasHeader from "./sistemasHeader";
 import SistemasGrid from "./sistemasGrid";
@@ -431,7 +431,8 @@ export default function SistemasPage() {
         onVoltar={() => navigate("/dashboard/sistemas")}
         onEditar={() => setFormularioAberto(sistemaAtivo)}
         onApagar={() => handleApagarSistema(sistemaAtivo)}
-        podeGerir={podeGerirSistema(sistemaAtivo, usuario)}
+        podeEditar={podeEditarSistema(usuario)}
+        podeEliminar={podeEliminarSistema(sistemaAtivo, usuario)}
       />
 
       {/* Navegação por Separadores (Tabs): uma só linha, com scroll horizontal nos ecrãs pequenos */}

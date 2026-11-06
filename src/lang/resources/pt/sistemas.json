@@ -54,7 +54,7 @@
     "naoEncontradoMensagem": "O sistema pode ter sido apagado ou a ligação está incorreta.",
     "voltarAosSistemas": "Voltar aos Sistemas",
     "semPermissaoTitulo": "Sem permissão",
-    "semPermissaoMensagem": "Só quem criou o sistema (ou um administrador) o pode editar.",
+    "semPermissaoMensagem": "Não tem permissão para editar sistemas.",
     "sistemaAtualizado": "Sistema atualizado com sucesso!",
     "sistemaRegistado": "Sistema registado com sucesso!",
     "erroGuardarSistema": "Erro ao guardar o sistema.",

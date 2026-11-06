@@ -15,6 +15,7 @@ import type {
   Dominio,
   ImagemContainer,
   DadosPlataforma,
+  DadosDominio,
 } from "../../../types/plataforma";
 import FormPlataforma from "./FormPlataforma";
 import FormServidor from "./FormServidor";
@@ -129,11 +130,7 @@ export default function PlataformaFormularioPage({
   };
 
   // Submissão: Domínio
-  const handleSalvarDominio = async (dados: {
-    nome: string;
-    dataExpiracao: string;
-    plataformaId: number;
-  }) => {
+  const handleSalvarDominio = async (dados: DadosDominio) => {
     setSalvando(true);
     try {
       if (itemEdicao?.tipo === "dominio") {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import type { Plataforma, Dominio } from "../../../types/plataforma";
+import type { Plataforma, Dominio, DadosDominio, AcessoPlataforma } from "../../../types/plataforma";
 import { ROTULOS_TIPO_PLATAFORMA } from "../../../types/plataformaConstantes";
 import SelectPesquisavel from "../../../components/selectPesquisavel";
 
@@ -10,12 +10,11 @@ interface FormDominioProps {
   plataformas: Plataforma[];
   salvando: boolean;
   onCancelar: () => void;
-  onSubmit: (dados: {
-    nome: string;
-    dataExpiracao: string;
-    plataformaId: number;
-  }) => Promise<void>;
+  onSubmit: (dados: DadosDominio) => Promise<void>;
 }
+
+// Nome de uma conta da plataforma: a quem pertence (descrição) ou, sem ela, o utilizador
+const nomeConta = (conta: AcessoPlataforma) => conta.descricao || conta.utilizador || `#${conta.id}`;
 
 export default function FormDominio({
   dominioExistente,
@@ -34,7 +33,23 @@ export default function FormDominio({
   const [plataformaId, setPlataformaId] = useState<number | string>(
     dominioExistente?.plataformaId ?? (listaPlataformas[0]?.id || "")
   );
+  // Conta (instituição) da plataforma a que o domínio pertence; "" = sem conta
+  const [acessoId, setAcessoId] = useState(() => {
+    if (dominioExistente) return dominioExistente.acessoId ? String(dominioExistente.acessoId) : "";
+    const contas = listaPlataformas.find((p) => String(p.id) === String(plataformaId))?.acessos ?? [];
+    return contas.length === 1 ? String(contas[0].id) : "";
+  });
   const [nome, setNome] = useState(dominioExistente?.nome ?? "");
+
+  const contasDaPlataforma =
+    listaPlataformas.find((p) => String(p.id) === String(plataformaId))?.acessos ?? [];
+
+  // Outra plataforma: a conta escolhida era da anterior. Com uma só conta, fica já escolhida.
+  const escolherPlataforma = (valor: string) => {
+    setPlataformaId(valor);
+    const contas = listaPlataformas.find((p) => String(p.id) === valor)?.acessos ?? [];
+    setAcessoId(contas.length === 1 ? String(contas[0].id) : "");
+  };
   const [dataExpiracao, setDataExpiracao] = useState(
     dominioExistente?.dataExpiracao
       ? dominioExistente.dataExpiracao.split("T")[0]
@@ -44,6 +59,7 @@ export default function FormDominio({
   useEffect(() => {
     if (dominioExistente) {
       setPlataformaId(dominioExistente.plataformaId);
+      setAcessoId(dominioExistente.acessoId ? String(dominioExistente.acessoId) : "");
       setNome(dominioExistente.nome);
       setDataExpiracao(
         dominioExistente.dataExpiracao
@@ -79,6 +95,7 @@ export default function FormDominio({
 
     await onSubmit({
       plataformaId: Number(plataformaId),
+      acessoId: acessoId ? Number(acessoId) : null,
       nome: dominioLimpo,
       dataExpiracao,
     });
@@ -104,16 +121,51 @@ export default function FormDominio({
           <SelectPesquisavel
             id="dominio-plataforma"
             valor={String(plataformaId)}
-            onChange={setPlataformaId}
+            onChange={escolherPlataforma}
             required
             placeholder={t("plataformas.form.selecionePlataforma")}
-            opcoes={listaPlataformas.map((plat) => ({
-              valor: String(plat.id),
-              label: plat.nome,
-              descricao: ROTULOS_TIPO_PLATAFORMA[plat.tipo] ?? plat.tipo,
-            }))}
+            opcoes={listaPlataformas.map((plat) => {
+              const tipo = ROTULOS_TIPO_PLATAFORMA[plat.tipo] ?? plat.tipo;
+              // Mostra logo na lista a que instituições (contas) pertence cada plataforma
+              const contas = (plat.acessos ?? []).map(nomeConta).join(", ");
+              return {
+                valor: String(plat.id),
+                label: plat.nome,
+                descricao: contas ? `${tipo} · ${contas}` : tipo,
+              };
+            })}
           />
         </div>
+
+        {/* Conta / instituição dentro da plataforma (ex: a conta da Netline ou a de um cliente) */}
+        {plataformaId !== "" && (
+          <div>
+            <label htmlFor="dominio-conta" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+              {t("plataformas.form.dominio.conta")}
+            </label>
+            {contasDaPlataforma.length > 0 ? (
+              <SelectPesquisavel
+                id="dominio-conta"
+                valor={acessoId}
+                onChange={setAcessoId}
+                opcaoVazia={t("plataformas.form.dominio.semConta")}
+                placeholder={t("plataformas.form.dominio.selecioneConta")}
+                comBusca={contasDaPlataforma.length > 6}
+                opcoes={contasDaPlataforma.map((conta) => ({
+                  valor: String(conta.id),
+                  label: nomeConta(conta),
+                  // Com descrição, o utilizador vai na linha de baixo para distinguir contas parecidas
+                  descricao: conta.descricao && conta.utilizador ? conta.utilizador : undefined,
+                }))}
+              />
+            ) : (
+              <p className="text-xs text-slate-500 bg-slate-50 border border-dashed border-slate-200 rounded-xl px-3.5 py-2.5">
+                {t("plataformas.form.dominio.plataformaSemContas")}
+              </p>
+            )}
+            <p className="text-xs text-slate-400 mt-1">{t("plataformas.form.dominio.contaAjuda")}</p>
+          </div>
+        )}
 
         {/* Nome do Domínio */}
         <div>

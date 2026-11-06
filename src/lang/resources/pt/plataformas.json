@@ -140,6 +140,7 @@
       "descricao": "Domínios da empresa e os registos DNS de cada sistema. Os registos criam-se e editam-se no formulário de cada sistema, em \"Endereço\".",
       "vazio": "Nenhum domínio registado.",
       "dominioPrincipal": "Domínio principal",
+      "verPlataforma": "Abrir a plataforma {{nome}}",
       "semRegistos": "Nenhum sistema usa ainda este domínio.",
       "editar": "Editar domínio",
       "eliminar": "Eliminar domínio",
@@ -154,7 +155,8 @@
         "tipo": "Tipo",
         "destino": "Destino / Apontamento",
         "sistema": "Sistema"
-      }
+      },
+      "contaTitulo": "Conta / instituição na plataforma"
     }
   },
   "cartoes": {
@@ -185,7 +187,7 @@
     "utilizador": "Utilizador",
     "naoDefinido": "Não definido",
     "token": "Token",
-    "tokenDescricao": "token da plataforma {{nome}}",
+    "tokenDescricao": "token da conta {{conta}} da plataforma {{nome}}",
     "urlRegistry": "URL do registry",
     "namespace": "Namespace",
     "registadaEm": "Registada em",
@@ -197,7 +199,20 @@
     "semSistemasContainerizados": "Nenhum sistema usa imagens deste registo. Escolha a imagem na infraestrutura do backend do sistema.",
     "semSistemasHospedados": "Nenhum sistema usa esta plataforma. Associe-a no formulário do sistema (frontend) ou na infraestrutura do backend.",
     "imagens": "Imagens ({{total}})",
-    "dominiosDns": "Domínios & DNS"
+    "dominiosDns": "Domínios & DNS",
+    "contasAcesso": "Contas de acesso",
+    "semContas": "Nenhuma conta de acesso registada.",
+    "contaSemDescricao": "Conta sem descrição",
+    "cliqueContaDominios": "Clique numa conta para ver os seus domínios e subdomínios.",
+    "verDominios_one": "Ver {{count}} domínio e subdomínios",
+    "verDominios_other": "Ver {{count}} domínios e subdomínios",
+    "verDominiosDaConta": "Ver os domínios da conta {{nome}}",
+    "semConta": "Domínios sem conta",
+    "semContaAjuda": "Domínios desta plataforma ainda sem conta associada. Edite cada domínio para escolher a conta.",
+    "voltarA": "Voltar a {{nome}}",
+    "contaEm": "Conta em {{nome}}",
+    "credenciais": "Credenciais de acesso",
+    "dominiosDnsTotal": "Domínios & DNS ({{total}})"
   },
   "servidor": {
     "erroCarregar": "Não foi possível carregar o servidor.",
@@ -288,7 +303,7 @@
       "tokenManter": "Deixe em branco para manter",
       "tokenPlaceholder": "Token ou palavra-passe de acesso",
       "tokenGuardado": "Token guardado",
-      "tokenDescricao": "token da plataforma {{nome}}",
+      "tokenDescricao": "token da conta {{conta}} da plataforma {{nome}}",
       "registry": "Registry de imagens",
       "urlRegistry": "URL do registry",
       "urlRegistryPlaceholder": "Ex: docker.io ou ghcr.io/netline",
@@ -301,7 +316,13 @@
       "logotipoAjuda": "PNG, JPEG ou WebP, até 2 MB.",
       "ativa": "Plataforma ativa e operacional",
       "atualizar": "Atualizar plataforma",
-      "criar": "Criar plataforma"
+      "criar": "Criar plataforma",
+      "descricaoConta": "A quem pertence a conta",
+      "descricaoContaPlaceholder": "Ex: Netline, Cliente X",
+      "adicionarConta": "Adicionar conta",
+      "removerConta": "Remover conta",
+      "contaIncompleta": "Cada conta precisa de um utilizador ou de um token.",
+      "contaN": "Conta {{n}}"
     },
     "servidor": {
       "atualizado": "Servidor atualizado com sucesso!",
@@ -364,7 +385,12 @@
       "dataExpiracao": "Data de expiração / renovação *",
       "dataExpiracaoAjuda": "Data em que o domínio expira na entidade registadora, para os alertas de renovação",
       "atualizar": "Atualizar domínio",
-      "criar": "Criar domínio"
+      "criar": "Criar domínio",
+      "conta": "Conta / instituição",
+      "selecioneConta": "Selecione a conta...",
+      "semConta": "Sem conta",
+      "contaAjuda": "A conta da plataforma onde o domínio está registado (ex: a da Netline ou a de um cliente).",
+      "plataformaSemContas": "Esta plataforma não tem contas de acesso registadas. Pode adicioná-las ao editar a plataforma."
     },
     "imagem": {
       "atualizada": "Imagem atualizada com sucesso!",
