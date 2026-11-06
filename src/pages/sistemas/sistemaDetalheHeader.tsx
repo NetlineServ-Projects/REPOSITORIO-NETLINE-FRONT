@@ -8,8 +8,9 @@ interface SistemaDetalheHeaderProps {
   onVoltar: () => void;
   onEditar: () => void;
   onApagar: () => void;
-  // Só quem criou o sistema (ou um ADMIN) o pode editar e eliminar
-  podeGerir: boolean;
+  // Editar: quem trabalha com sistemas. Eliminar: só quem criou o sistema
+  podeEditar: boolean;
+  podeEliminar: boolean;
 }
 
 export default function SistemaDetalheHeader({
@@ -17,7 +18,8 @@ export default function SistemaDetalheHeader({
   onVoltar,
   onEditar,
   onApagar,
-  podeGerir,
+  podeEditar,
+  podeEliminar,
 }: SistemaDetalheHeaderProps) {
   const { t } = useTranslation();
   return (
@@ -38,10 +40,14 @@ export default function SistemaDetalheHeader({
           </span>
         </div>
 
-        {podeGerir && (
+        {(podeEditar || podeEliminar) && (
           <div className="flex items-center gap-2 shrink-0">
-            <BotaoIconeCabecalho rotulo={t("sistemas.detalhe.editar")} Icone={IconCaneta} onClick={onEditar} />
-            <BotaoIconeCabecalho rotulo={t("sistemas.detalhe.apagar")} Icone={IconLixeira} perigoso onClick={onApagar} />
+            {podeEditar && (
+              <BotaoIconeCabecalho rotulo={t("sistemas.detalhe.editar")} Icone={IconCaneta} onClick={onEditar} />
+            )}
+            {podeEliminar && (
+              <BotaoIconeCabecalho rotulo={t("sistemas.detalhe.apagar")} Icone={IconLixeira} perigoso onClick={onApagar} />
+            )}
           </div>
         )}
       </div>

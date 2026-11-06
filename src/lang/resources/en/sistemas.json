@@ -54,7 +54,7 @@
     "naoEncontradoMensagem": "The system may have been deleted or the link is incorrect.",
     "voltarAosSistemas": "Back to Systems",
     "semPermissaoTitulo": "No permission",
-    "semPermissaoMensagem": "Only the person who created the system (or an administrator) can edit it.",
+    "semPermissaoMensagem": "You do not have permission to edit systems.",
     "sistemaAtualizado": "System updated successfully!",
     "sistemaRegistado": "System registered successfully!",
     "erroGuardarSistema": "Error saving the system.",

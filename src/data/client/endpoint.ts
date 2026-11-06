@@ -37,7 +37,8 @@ export const API_ENDPOINTS = {
   PLATAFORMA_BY_ID: (id: number | string) => `/plataformas/${id}`,
   PLATAFORMA_ARVORE_BY_ID: (id: number | string) => `/plataformas/${id}/arvore`,
   PLATAFORMA_FORNECEDORES: "/plataformas/fornecedores",
-  PLATAFORMA_TOKEN: (id: number | string) => `/plataformas/${id}/token`,
+  PLATAFORMA_TOKEN: (id: number | string, acessoId: number | string) =>
+    `/plataformas/${id}/acessos/${acessoId}/token`,
   PLATAFORMA_LOGOTIPO: (id: number | string) => `/plataformas/${id}/logotipo`,
 
 

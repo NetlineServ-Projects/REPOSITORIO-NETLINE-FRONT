@@ -72,19 +72,25 @@ export interface Sistema {
   responsavelTecnico?: string;
   versaoAtual?: string;
   totalDocumentos?: number;
-  // Quem criou o sistema: só essa pessoa (ou quem tem sistemas.gerir) o pode editar e eliminar
+  // Quem criou o sistema: só essa pessoa o pode eliminar
   criadoPorId?: number | null;
   criadoPor?: { id: number; nome: string } | null;
 }
 
-// Mesma regra do backend (sistemasService.garantirPodeGerir)
-export function podeGerirSistema(
+// Mesmas regras do backend (sistemasService.garantirPodeEditar / garantirPodeEliminar)
+
+// Editar: qualquer pessoa que trabalhe com sistemas, não só quem o criou
+export function podeEditarSistema(usuario: ComAcesso | null): boolean {
+  return pode(usuario, PERMISSOES.SISTEMAS_GERIR) || pode(usuario, PERMISSOES.SISTEMAS_CRIAR);
+}
+
+// Eliminar: só quem criou o sistema (os sistemas sem criador ficam para quem tem sistemas.gerir)
+export function podeEliminarSistema(
   sistema: Sistema,
   usuario: ComAcesso | null,
 ): boolean {
-  if (pode(usuario, PERMISSOES.SISTEMAS_GERIR)) return true;
-  const ehCriador = sistema.criadoPorId != null && sistema.criadoPorId === usuario?.id;
-  return ehCriador && pode(usuario, PERMISSOES.SISTEMAS_CRIAR);
+  if (sistema.criadoPorId == null) return pode(usuario, PERMISSOES.SISTEMAS_GERIR);
+  return sistema.criadoPorId === usuario?.id;
 }
 
 export type TipoCredencial =

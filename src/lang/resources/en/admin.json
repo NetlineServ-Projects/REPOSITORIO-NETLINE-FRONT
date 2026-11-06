@@ -213,11 +213,11 @@
       },
       "sistemas.criar": {
         "nome": "Create systems",
-        "descricao": "Register systems and edit the ones the person created."
+        "descricao": "Register and edit systems; delete only the ones the person created."
       },
       "sistemas.gerir": {
         "nome": "Manage all systems",
-        "descricao": "Edit and delete any system."
+        "descricao": "Edit systems and delete the ones without a creator (old or from deleted users)."
       },
       "sistemas.infraestrutura.ver": {
         "nome": "See infrastructure and credentials",

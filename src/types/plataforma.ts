@@ -30,8 +30,8 @@ export interface Plataforma {
   };
   // Sistemas que usam a plataforma: frontend alojado nela e/ou backend nela ou num servidor dela
   sistemasHospedados?: SistemaDaPlataforma[];
-  utilizador: string | null;
-  temToken: boolean;
+  // Contas de acesso (utilizador + token); o token só se revela com reautenticação
+  acessos: AcessoPlataforma[];
   registryUrl: string | null;
   namespace: string | null;
   dominios?: Dominio[];
@@ -92,7 +92,17 @@ export interface Dominio {
     id: number;
     nome: string;
   };
+  // Conta da plataforma (instituição) onde o domínio está registado, ex: Netline ou um cliente
+  acessoId?: number | null;
+  acesso?: { id: number; descricao: string | null; utilizador: string | null } | null;
   subdominios?: Subdominio[];
+}
+
+export interface DadosDominio {
+  nome: string;
+  dataExpiracao: string;
+  plataformaId: number;
+  acessoId: number | null; // null = sem conta
 }
 
 export type TipoDns =
@@ -154,8 +164,8 @@ export interface DadosPlataforma {
   fornecedor: FornecedorPlataforma;
   urlPainel?: string | null;
   ativo?: boolean;
-  utilizador?: string | null;
-  token?: string | null; // omitido = manter o token atual
+  // Lista completa das contas: as que não forem enviadas (pelo id) são apagadas
+  acessos?: DadosAcessoPlataforma[];
   registryUrl?: string | null;
   namespace?: string | null;
 } 
@@ -166,4 +176,19 @@ export interface SistemaDaPlataforma {
   frontend: boolean;
   // viaImagem: o backend corre noutro lado a partir de uma imagem guardada nesta plataforma
   backend: { ambiente: "PRODUCAO" | "TESTES"; servidor: string | null; imagem: string | null; viaImagem: boolean }[];
+}
+
+// Uma conta de acesso da plataforma (ex: a da Netline e a de um cliente que gerimos)
+export interface AcessoPlataforma {
+  id: number;
+  descricao: string | null;
+  utilizador: string | null;
+  temToken: boolean;
+}
+
+export interface DadosAcessoPlataforma {
+  id?: number; // sem id = conta nova
+  descricao?: string | null;
+  utilizador?: string | null;
+  token?: string | null; // omitido = manter o token atual
 }

@@ -213,11 +213,11 @@
       },
       "sistemas.criar": {
         "nome": "Criar sistemas",
-        "descricao": "Registar sistemas e editar os que a própria pessoa criou."
+        "descricao": "Registar e editar sistemas; eliminar só os que a própria pessoa criou."
       },
       "sistemas.gerir": {
         "nome": "Gerir todos os sistemas",
-        "descricao": "Editar e eliminar qualquer sistema."
+        "descricao": "Editar sistemas e eliminar os que não têm criador (antigos ou de utilizadores eliminados)."
       },
       "sistemas.infraestrutura.ver": {
         "nome": "Ver infraestrutura e credenciais",

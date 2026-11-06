@@ -138,6 +138,7 @@
       "descricao": "Company domains and each system's DNS records. Records are created and edited in each system's form, under \"Address\".",
       "vazio": "No domains registered.",
       "dominioPrincipal": "Primary domain",
+      "verPlataforma": "Open the platform {{nome}}",
       "semRegistos": "No system uses this domain yet.",
       "editar": "Edit domain",
       "eliminar": "Delete domain",
@@ -152,7 +153,8 @@
         "tipo": "Type",
         "destino": "Target / Points to",
         "sistema": "System"
-      }
+      },
+      "contaTitulo": "Account / institution on the platform"
     }
   },
   "cartoes": {
@@ -183,7 +185,7 @@
     "utilizador": "Username",
     "naoDefinido": "Not set",
     "token": "Token",
-    "tokenDescricao": "token of platform {{nome}}",
+    "tokenDescricao": "token of account {{conta}} on platform {{nome}}",
     "urlRegistry": "Registry URL",
     "namespace": "Namespace",
     "registadaEm": "Registered on",
@@ -195,7 +197,20 @@
     "semSistemasContainerizados": "No system uses images from this registry. Choose the image in the system's backend infrastructure.",
     "semSistemasHospedados": "No system uses this platform. Assign it in the system form (frontend) or in the backend infrastructure.",
     "imagens": "Images ({{total}})",
-    "dominiosDns": "Domains & DNS"
+    "dominiosDns": "Domains & DNS",
+    "contasAcesso": "Access accounts",
+    "semContas": "No access accounts registered.",
+    "contaSemDescricao": "Account without description",
+    "cliqueContaDominios": "Click an account to see its domains and subdomains.",
+    "verDominios_one": "See {{count}} domain and subdomains",
+    "verDominios_other": "See {{count}} domains and subdomains",
+    "verDominiosDaConta": "See the domains of account {{nome}}",
+    "semConta": "Domains without account",
+    "semContaAjuda": "Domains on this platform with no account yet. Edit each domain to choose the account.",
+    "voltarA": "Back to {{nome}}",
+    "contaEm": "Account on {{nome}}",
+    "credenciais": "Access credentials",
+    "dominiosDnsTotal": "Domains & DNS ({{total}})"
   },
   "servidor": {
     "erroCarregar": "Could not load the server.",
@@ -286,7 +301,7 @@
       "tokenManter": "Leave blank to keep the current one",
       "tokenPlaceholder": "Access token or password",
       "tokenGuardado": "Saved token",
-      "tokenDescricao": "token of platform {{nome}}",
+      "tokenDescricao": "token of account {{conta}} on platform {{nome}}",
       "registry": "Image registry",
       "urlRegistry": "Registry URL",
       "urlRegistryPlaceholder": "E.g. docker.io or ghcr.io/netline",
@@ -299,7 +314,13 @@
       "logotipoAjuda": "PNG, JPEG or WebP, up to 2 MB.",
       "ativa": "Platform active and operational",
       "atualizar": "Update platform",
-      "criar": "Create platform"
+      "criar": "Create platform",
+      "descricaoConta": "Account owner",
+      "descricaoContaPlaceholder": "E.g. Netline, Client X",
+      "adicionarConta": "Add account",
+      "removerConta": "Remove account",
+      "contaIncompleta": "Each account needs a username or a token.",
+      "contaN": "Account {{n}}"
     },
     "servidor": {
       "atualizado": "Server updated successfully!",
@@ -362,7 +383,12 @@
       "dataExpiracao": "Expiry / renewal date *",
       "dataExpiracaoAjuda": "Date the domain expires at the registrar, used for renewal alerts",
       "atualizar": "Update domain",
-      "criar": "Create domain"
+      "criar": "Create domain",
+      "conta": "Account / institution",
+      "selecioneConta": "Select the account...",
+      "semConta": "No account",
+      "contaAjuda": "The platform account where the domain is registered (e.g. Netline's or a client's).",
+      "plataformaSemContas": "This platform has no access accounts. You can add them by editing the platform."
     },
     "imagem": {
       "atualizada": "Image updated successfully!",

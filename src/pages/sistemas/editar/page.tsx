@@ -2,7 +2,7 @@ import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useSistemasData, podeGerirSistema } from "../../../hooks/useSistemasData";
+import { useSistemasData, podeEditarSistema } from "../../../hooks/useSistemasData";
 import SistemaFormulario from "../formulario/page";
 import { EstadoCarregando, EstadoErro } from "../../../components/estados";
 import { PERMISSOES, pode, type PerfilResumo } from "../../../utils/permissoes";
@@ -45,7 +45,7 @@ export default function EditarSistemaPage() {
     return <EstadoErro mensagem={erro} onTentarNovamente={recarregar} />;
   }
 
-  if (!sistema || !podeGerirSistema(sistema, usuario)) {
+  if (!sistema || !podeEditarSistema(usuario)) {
     return (
       <div className="space-y-3 text-center">
         <EstadoErro
