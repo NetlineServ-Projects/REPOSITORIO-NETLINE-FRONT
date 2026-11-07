@@ -31,6 +31,8 @@ import { AcessoInfraestruturaLayout } from "./pages/sistemas/infraestrutura/aces
 import { AcessoElevadoLayout } from "./components/acessoElevado";
 import { PERMISSOES, pode, ehAdministrador, type Permissao } from "./utils/permissoes";
 import PerfisPage from "./pages/configuracoes/perfis/page";
+import AuditoriaPage from "./pages/admin/auditoria/page";
+import AuditoriaDetalhePage from "./pages/admin/auditoria/detalhe/page";
 
 import EditarDocumentoPage from "./pages/documentos/[id]/editar/page";
 import EditarSistemaPage from "./pages/sistemas/editar/page";
@@ -103,6 +105,8 @@ function App() {
             </Route>
             <Route element={<RotaComPermissao />}>
               <Route path="configuracoes/perfis" element={<PerfisPage />} />
+              <Route path="auditoria" element={<AuditoriaPage />} />
+              <Route path="auditoria/:id" element={<AuditoriaDetalhePage />} />
             </Route>
             <Route path="perfil" element={<Perfil />} />
             <Route path="sistemas/:id" element={<AcessoInfraestruturaLayout />}>

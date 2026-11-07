@@ -2,12 +2,13 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useUsuario } from "./usuarioContext";
-import { PERMISSOES, pode } from "../utils/permissoes";
+import { PERMISSOES, pode, ehAdministrador } from "../utils/permissoes";
 import logoNetline from "../assets/netline.jpg";
 import {
   IconHome,
   IconDocumento,
   IconConfig,
+  IconEscudo,
   IconPasta,
   IconLixeira,
   IconBarras,
@@ -38,6 +39,8 @@ export default function Sidebar({ fechada = false }: SidebarProps) {
   const podeLixeira = pode(usuarioLogado, PERMISSOES.DOCUMENTOS_LIXEIRA);
   const podePlataformas = pode(usuarioLogado, PERMISSOES.INFRA_VER);
   const podeUtilizadores = pode(usuarioLogado, PERMISSOES.UTILIZADORES_GERIR);
+  // A auditoria é só para o perfil Administrador
+  const podeAuditoria = ehAdministrador(usuarioLogado);
 
   const seccoesMenu: SeccaoMenu[] = [
     {
@@ -114,6 +117,15 @@ export default function Sidebar({ fechada = false }: SidebarProps) {
           label: t("sidebar.itens.configuracoes"),
           icon: <IconConfig />,
         },
+        ...(podeAuditoria
+          ? [
+              {
+                path: "/dashboard/auditoria",
+                label: t("sidebar.itens.auditoria"),
+                icon: <IconEscudo />,
+              },
+            ]
+          : []),
       ],
     },
   ];

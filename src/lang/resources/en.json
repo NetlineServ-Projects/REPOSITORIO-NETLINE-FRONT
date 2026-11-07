@@ -301,7 +301,8 @@
       "sistemasDesenvolvidos": "Developed systems",
       "plataformas": "Platforms",
       "usuarios": "Users",
-      "configuracoes": "Settings"
+      "configuracoes": "Settings",
+      "auditoria": "Audit"
     }
   }
 }
