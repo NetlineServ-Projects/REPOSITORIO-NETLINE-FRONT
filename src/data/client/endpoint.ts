@@ -57,6 +57,9 @@ export const API_ENDPOINTS = {
 
   ATIVIDADES_RECENTES: "/atividades/recentes",
 
+  AUDITORIA: "/auditoria",
+  AUDITORIA_FUNCIONALIDADES: "/auditoria/funcionalidades",
+  AUDITORIA_BY_ID: (id: number | string) => `/auditoria/${id}`,
   NOTIFICACOES: "/notificacoes",
   NOTIFICACOES_CONTAGEM: "/notificacoes/contagem",
   NOTIFICACOES_LIDAS: "/notificacoes/lidas",
