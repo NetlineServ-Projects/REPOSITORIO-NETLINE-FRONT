@@ -317,7 +317,7 @@ export default function LixeiraPage() {
             })}
           </ul>
 
-          <div className="hidden xl:block overflow-x-auto">
+          <div className="hidden xl:block rolagem-horizontal">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 text-xs uppercase font-semibold">

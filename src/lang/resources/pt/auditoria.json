@@ -81,5 +81,6 @@
     "duracaoRotulo": "Duração",
     "duracaoMs": "{{ms}} ms"
   },
-  "sobretitulo": "Administração"
+  "sobretitulo": "Administração",
+  "deslizarParaOLado": "Deslize para o lado para ver todas as colunas."
 }
