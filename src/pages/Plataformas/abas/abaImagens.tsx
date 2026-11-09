@@ -105,7 +105,7 @@ export default function AbaImagens({
         ))}
       </ul>
 
-      <div className="hidden @2xl:block overflow-x-auto">
+      <div className="hidden @2xl:block rolagem-horizontal">
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 uppercase tracking-wider font-semibold">
             <tr>

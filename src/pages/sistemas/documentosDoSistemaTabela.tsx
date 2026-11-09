@@ -245,7 +245,7 @@ export default function DocumentosDoSistemaTabela({
       </ul>
 
       {/* Tabela de Listagem de Documentos */}
-      <div className="hidden lg:block overflow-x-auto">
+      <div className="hidden lg:block rolagem-horizontal">
         <table className="w-full text-left text-sm text-slate-600">
           <thead className="bg-slate-50 text-slate-400 uppercase text-[11px] border-b border-slate-100 tracking-wider">
             <tr>

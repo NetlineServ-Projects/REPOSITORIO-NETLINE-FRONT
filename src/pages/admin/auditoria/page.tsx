@@ -151,7 +151,10 @@ export default function AuditoriaPage() {
             </button>
           </div>
         ) : (
-          <div className={`overflow-x-auto transition-opacity ${auditoria.aCarregar ? "opacity-60" : ""}`}>
+          <>
+          {/* A tabela tem colunas a mais para ecrãs estreitos: avisa que se desliza para o lado */}
+          <p className="xl:hidden px-4 pt-3 text-xs text-slate-400">↔ {t("auditoria.deslizarParaOLado")}</p>
+          <div className={`rolagem-horizontal transition-opacity ${auditoria.aCarregar ? "opacity-60" : ""}`}>
             <table className="w-full min-w-240 text-sm">
               <thead>
                 <tr className="text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100 bg-slate-50/60">
@@ -231,6 +234,7 @@ export default function AuditoriaPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 

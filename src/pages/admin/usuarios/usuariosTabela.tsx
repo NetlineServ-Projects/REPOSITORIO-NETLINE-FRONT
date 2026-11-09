@@ -101,7 +101,7 @@ export default function UsuariosTabela({ usuarios, ...acoes }: UsuariosTabelaPro
             </li>
           ))}
         </ul>
-        <div className="hidden lg:block overflow-x-auto">
+        <div className="hidden lg:block rolagem-horizontal">
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50/50 text-slate-400 uppercase font-semibold text-xs tracking-wider border-b border-slate-100">
               <tr>

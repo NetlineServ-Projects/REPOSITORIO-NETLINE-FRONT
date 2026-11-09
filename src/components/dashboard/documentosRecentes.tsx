@@ -57,7 +57,7 @@ export default function DocumentosRecentes({ documentos, onVerTodos, mostrarEsta
         )}
       </ul>
 
-      <div className="hidden xl:block overflow-x-auto">
+      <div className="hidden xl:block rolagem-horizontal">
         <table className="w-full text-left text-sm text-slate-600">
           <thead className="bg-slate-50 text-slate-400 uppercase text-xs">
             <tr>

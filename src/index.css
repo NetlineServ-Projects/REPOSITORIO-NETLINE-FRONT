@@ -1211,3 +1211,29 @@ body {
   --xy-controls-button-color: var(--color-slate-800);
   --xy-minimap-background-color: var(--fundo-cartao);
 }
+
+/* Tabelas largas: scroll para os lados dentro do cartão, com a barra sempre visível.
+   No telemóvel (e em muitos portáteis) as barras só aparecem durante o deslize, e a
+   tabela parecia cortada: com uma barra fina fixa percebe-se que há mais colunas. */
+.rolagem-horizontal {
+  overflow-x: auto;
+}
+.rolagem-horizontal::-webkit-scrollbar {
+  -webkit-appearance: none;
+  height: 8px;
+}
+.rolagem-horizontal::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-300);
+  border-radius: 9999px;
+}
+.rolagem-horizontal::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+/* Firefox não tem ::-webkit-scrollbar. No Chrome o scrollbar-width anularia as regras de cima
+   (e a barra voltava a ser invisível no telemóvel), por isso só se aplica onde elas não existem */
+@supports not selector(::-webkit-scrollbar) {
+  .rolagem-horizontal {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-300) transparent;
+  }
+}

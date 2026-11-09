@@ -112,7 +112,7 @@ export default function AbaServidores({
         ))}
       </ul>
 
-      <div className="hidden @2xl:block overflow-x-auto">
+      <div className="hidden @2xl:block rolagem-horizontal">
         <table className="w-full min-w-140 text-left text-xs">
           <thead className="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
             <tr>

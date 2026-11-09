@@ -316,7 +316,7 @@ export default function CategoriasPage() {
       {/* A tabela só aparece a partir de xl (com a barra lateral não cabe antes); no telemóvel usam-se sempre os cartões */}
       {modoExibicao === "tabela" && (
         <div className="hidden xl:block bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="rolagem-horizontal">
             <table className="w-full text-left text-sm text-slate-600">
               <thead className="bg-slate-50 text-slate-400 uppercase text-xs border-b border-slate-100">
                 <tr>
