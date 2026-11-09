@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
   Outlet,
+  useOutletContext,
 } from "react-router-dom";
 import Home from "./pages/home/home";
 import Autenticacao from "./pages/auth/autenticacao";
@@ -48,14 +49,17 @@ function RotaProtegida({ children }: { children: React.ReactNode }) {
 
 // Só entra quem tem a permissão (ou, sem permissão indicada, só o Administrador).
 // A API verifica de novo: isto só evita mostrar páginas que dariam 403.
+// O contexto do Dashboard ({ usuario, ... }) tem de passar para as páginas de dentro:
+// sem ele, as que usam useOutletContext() recebem undefined e a página fica em branco.
 function RotaComPermissao({ permissao }: { permissao?: Permissao }) {
   const { usuarioLogado } = useUsuario();
+  const contextoDoDashboard = useOutletContext();
   if (!usuarioLogado) return <Navigate to="/autenticacao" replace />;
   // Sessão de uma versão antiga, ainda sem perfil: espera que /auth/me o traga
   if (!usuarioLogado.perfil) return null;
   const permitido = permissao ? pode(usuarioLogado, permissao) : ehAdministrador(usuarioLogado);
   if (!permitido) return <Navigate to="/dashboard" replace />;
-  return <Outlet />;
+  return <Outlet context={contextoDoDashboard} />;
 }
 
 function App() {
